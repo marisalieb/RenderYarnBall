@@ -69,8 +69,12 @@ ri.Option("rib", {"string asciistyle": "indented"})
 output_path = "/home/s5723321/Renderman/Lecture3Lightingcopy3"
 print("Saving to:", output_path)
 
-ri.Begin("__spheretorushair.rib")
-ri.Display("/home/s5723321/Renderman/Lecture3Lightingcopy3/hair_output.exr", "file", "rgba")
+# ri.Begin("__spheretorushair.rib")
+# ri.Display("/home/s5723321/Renderman/Lecture3Lightingcopy3/hair_output.exr", "file", "rgba")
+
+ri.Begin("__render")  # or a filename like "pointlight.rib"
+ri.Display("torus-hair.tiff", "it", "rgb")
+
 
 ri.Format(1024, 1024, 1)
 ri.Projection(ri.PERSPECTIVE, {ri.FOV: 40})
@@ -97,27 +101,27 @@ ri.Attribute("visibility", {"int transmission": [1]})  # Allow shadow rays
 
 ri.AttributeEnd()
 
-# # Hair
-# hair_pts, hair_widths, hair_npts = [], [], []
-# generateHair(hair_pts, hair_widths, hair_npts, count=500)
+# Hair
+hair_pts, hair_widths, hair_npts = [], [], []
+generateHair(hair_pts, hair_widths, hair_npts, count=500)
 
-# ri.AttributeBegin()
-# ri.Bxdf('PxrMarschnerHair', 'hairShader', {
-#     'float diffuseGain': [0.3],  # Allow some diffuse reflection
-#     'color diffuseColor': [0.0, 1.0, 0.0],  # Green diffuse color
-#     'color specularColorR': [0.2, 1.0, 0.2],  # Greenish specular reflections
-#     'color specularColorTRT': [0.3, 1.0, 0.3],
-#     'color specularColorTT': [0.3, 1.0, 0.3],
-#     'float specularGainR': [1.0],
-#     'float specularGainTRT': [1.0],
-#     'float specularGainTT': [1.0]
-# })
+ri.AttributeBegin()
+ri.Bxdf('PxrMarschnerHair', 'hairShader', {
+    'float diffuseGain': [0.3],  # Allow some diffuse reflection
+    'color diffuseColor': [0.0, 1.0, 0.0],  # Green diffuse color
+    'color specularColorR': [0.2, 1.0, 0.2],  # Greenish specular reflections
+    'color specularColorTRT': [0.3, 1.0, 0.3],
+    'color specularColorTT': [0.3, 1.0, 0.3],
+    'float specularGainR': [1.0],
+    'float specularGainTRT': [1.0],
+    'float specularGainTT': [1.0]
+})
 
-# ri.Curves("cubic", hair_npts, "nonperiodic", {
-#     ri.P: hair_pts,
-#     "float width": hair_widths
-# })
-# ri.AttributeEnd()
+ri.Curves("cubic", hair_npts, "nonperiodic", {
+    ri.P: hair_pts,
+    "float width": hair_widths
+})
+ri.AttributeEnd()
 
 ri.WorldEnd()
 ri.End()

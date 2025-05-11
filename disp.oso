@@ -2,34 +2,80 @@ OpenShadingLanguage 1.00
 # Compiled by oslc 1.13.0.@PROJECT_VERSION_TWEAK@"dev"
 # options: 
 shader disp
-param	float	scale	1		%read{13,13} %write{2147483647,-1}
-param	float	repeatU	5.5		%read{0,0} %write{2147483647,-1}
-param	float	repeatV	1		%read{1,1} %write{2147483647,-1}
-oparam	float	resultF	0		%read{2147483647,-1} %write{13,13}
-global	float	u	%read{0,0} %write{2147483647,-1}
-global	float	v	%read{1,1} %write{2147483647,-1}
-local	float	spiralCoord	%read{8,8} %write{7,7}
-local	float	blend	%read{13,13} %write{12,12}
+param	float	scale1	1		%read{43,43} %write{2147483647,-1}
+param	float	repeatU1	5.5		%read{0,0} %write{2147483647,-1}
+param	float	repeatV1	1		%read{1,1} %write{2147483647,-1}
+param	float	scale2	0.200000003		%read{44,44} %write{2147483647,-1}
+param	float	repeatU2	2.5		%read{14,14} %write{2147483647,-1}
+param	float	repeatV2	0.5		%read{15,15} %write{2147483647,-1}
+param	float	noiseAmount1	0.0500000007		%read{32,32} %write{2147483647,-1}
+param	float	noiseFreq1	10		%read{28,28} %write{2147483647,-1}
+param	float	noiseAmount2	0.0199999996		%read{37,37} %write{2147483647,-1}
+param	float	noiseFreq2	25		%read{33,33} %write{2147483647,-1}
+param	float	noiseAmount3	0.0500000007		%read{42,42} %write{2147483647,-1}
+param	float	noiseFreq3	10		%read{38,38} %write{2147483647,-1}
+oparam	float	resultF	0		%read{2147483647,-1} %write{48,48}
+global	point	P	%read{28,38} %write{2147483647,-1}
+global	float	u	%read{0,14} %write{2147483647,-1}
+global	float	v	%read{1,15} %write{2147483647,-1}
+local	float	spiralCoord1	%read{8,8} %write{7,7}
+local	float	raw1	%read{13,13} %write{12,12}
+local	float	blend1	%read{43,43} %write{13,13}
+local	float	spiralCoord2	%read{22,22} %write{21,21}
+local	float	raw2	%read{27,27} %write{26,26}
+local	float	blend2	%read{44,44} %write{27,27}
+local	float	n1	%read{30,30} %write{29,29}
+local	float	noisyBump1	%read{46,46} %write{32,32}
+local	float	n2	%read{35,35} %write{34,34}
+local	float	noisyBump2	%read{47,47} %write{37,37}
+local	float	n3	%read{40,40} %write{39,39}
+local	float	noisyBump3	%read{48,48} %write{42,42}
 temp	float	$tmp1	%read{2,2} %write{0,0}
 temp	float	$tmp2	%read{2,2} %write{1,1}
 temp	float	$tmp3	%read{4,7} %write{2,2}
-const	float	$const1	1		%read{4,6} %write{2147483647,-1}
-const	string	$const2	"mod"		%read{3,3} %write{2147483647,-1}
+const	float	$const1	1		%read{4,20} %write{2147483647,-1}
+const	string	$const2	"mod"		%read{3,17} %write{2147483647,-1}
 temp	float	$tmp4	%read{6,6} %write{5,5}
 temp	float	$tmp5	%read{5,5} %write{4,4}
 temp	float	$tmp6	%read{7,7} %write{6,6}
-const	float	$const3	0.5		%read{11,12} %write{2147483647,-1}
+const	float	$const3	0.5		%read{11,40} %write{2147483647,-1}
 temp	float	$tmp7	%read{11,11} %write{10,10}
-const	float	$const4	2		%read{8,8} %write{2147483647,-1}
+const	float	$const4	2		%read{8,41} %write{2147483647,-1}
 temp	float	$tmp8	%read{9,9} %write{8,8}
-const	float	$const5	3.14159274		%read{9,9} %write{2147483647,-1}
+const	float	$const5	3.14159274		%read{9,23} %write{2147483647,-1}
 temp	float	$tmp9	%read{10,10} %write{9,9}
 temp	float	$tmp10	%read{12,12} %write{11,11}
+const	float	$const6	0.25		%read{13,27} %write{2147483647,-1}
+temp	float	$tmp11	%read{16,16} %write{14,14}
+temp	float	$tmp12	%read{16,16} %write{15,15}
+temp	float	$tmp13	%read{18,21} %write{16,16}
+temp	float	$tmp14	%read{20,20} %write{19,19}
+temp	float	$tmp15	%read{19,19} %write{18,18}
+temp	float	$tmp16	%read{21,21} %write{20,20}
+temp	float	$tmp17	%read{25,25} %write{24,24}
+temp	float	$tmp18	%read{23,23} %write{22,22}
+temp	float	$tmp19	%read{24,24} %write{23,23}
+temp	float	$tmp20	%read{26,26} %write{25,25}
+const	string	$const7	"perlin"		%read{29,39} %write{2147483647,-1}
+temp	point	$tmp21	%read{29,29} %write{28,28}
+temp	float	$tmp22	%read{31,31} %write{30,30}
+temp	float	$tmp23	%read{32,32} %write{31,31}
+temp	point	$tmp24	%read{34,34} %write{33,33}
+temp	float	$tmp25	%read{36,36} %write{35,35}
+temp	float	$tmp26	%read{37,37} %write{36,36}
+temp	point	$tmp27	%read{39,39} %write{38,38}
+temp	float	$tmp28	%read{41,41} %write{40,40}
+temp	float	$tmp29	%read{42,42} %write{41,41}
+temp	float	$tmp30	%read{45,45} %write{43,43}
+temp	float	$tmp31	%read{45,45} %write{44,44}
+temp	float	$tmp32	%read{46,46} %write{45,45}
+temp	float	$tmp33	%read{47,47} %write{46,46}
+temp	float	$tmp34	%read{48,48} %write{47,47}
 code ___main___
-# disp.osl:11
-#     float spiralCoord = mod(u * repeatU + v * repeatV, 1.0);
-	mul		$tmp1 u repeatU 	%filename{"disp.osl"} %line{11} %argrw{"wrr"}
-	mul		$tmp2 v repeatV 	%argrw{"wrr"}
+# disp.osl:24
+#     float spiralCoord1 = mod(u * repeatU1 + v * repeatV1, 1.0);
+	mul		$tmp1 u repeatU1 	%filename{"disp.osl"} %line{24} %argrw{"wrr"}
+	mul		$tmp2 v repeatV1 	%argrw{"wrr"}
 	add		$tmp3 $tmp1 $tmp2 	%argrw{"wrr"}
 	functioncall	$const2 8 	%argrw{"r"}
 # /opt/pixar/RenderManProServer-26.2/lib/osl/include/stdosl.h:132
@@ -37,15 +83,72 @@ code ___main___
 	div		$tmp5 $tmp3 $const1 	%filename{"/opt/pixar/RenderManProServer-26.2/lib/osl/include/stdosl.h"} %line{132} %argrw{"wrr"}
 	floor		$tmp4 $tmp5 	%argrw{"wr"}
 	mul		$tmp6 $const1 $tmp4 	%argrw{"wrr"}
-	sub		spiralCoord $tmp3 $tmp6 	%argrw{"wrr"}
-# disp.osl:14
-#     float blend = 0.5 + 0.5 * sin(spiralCoord * 2.0 * M_PI);
-	mul		$tmp8 spiralCoord $const4 	%filename{"disp.osl"} %line{14} %argrw{"wrr"}
+	sub		spiralCoord1 $tmp3 $tmp6 	%argrw{"wrr"}
+# disp.osl:25
+#     float raw1 = 0.5 + 0.5 * sin(spiralCoord1 * 2.0 * M_PI);
+	mul		$tmp8 spiralCoord1 $const4 	%filename{"disp.osl"} %line{25} %argrw{"wrr"}
 	mul		$tmp9 $tmp8 $const5 	%argrw{"wrr"}
 	sin		$tmp7 $tmp9 	%argrw{"wr"}
 	mul		$tmp10 $const3 $tmp7 	%argrw{"wrr"}
-	add		blend $const3 $tmp10 	%argrw{"wrr"}
-# disp.osl:17
-#     resultF = scale * blend;
-	mul		resultF scale blend 	%line{17} %argrw{"wrr"}
+	add		raw1 $const3 $tmp10 	%argrw{"wrr"}
+# disp.osl:26
+#     float blend1 = pow(raw1, 0.25);  // Bias toward bright displacement
+	pow		blend1 raw1 $const6 	%line{26} %argrw{"wrr"}
+# disp.osl:29
+#     float spiralCoord2 = mod(u * repeatU2 + v * repeatV2, 1.0);
+	mul		$tmp11 u repeatU2 	%line{29} %argrw{"wrr"}
+	mul		$tmp12 v repeatV2 	%argrw{"wrr"}
+	add		$tmp13 $tmp11 $tmp12 	%argrw{"wrr"}
+	functioncall	$const2 22 	%argrw{"r"}
+# /opt/pixar/RenderManProServer-26.2/lib/osl/include/stdosl.h:132
+# float  mod (float  a, float  b) { return a - b*floor(a/b); }
+	div		$tmp15 $tmp13 $const1 	%filename{"/opt/pixar/RenderManProServer-26.2/lib/osl/include/stdosl.h"} %line{132} %argrw{"wrr"}
+	floor		$tmp14 $tmp15 	%argrw{"wr"}
+	mul		$tmp16 $const1 $tmp14 	%argrw{"wrr"}
+	sub		spiralCoord2 $tmp13 $tmp16 	%argrw{"wrr"}
+# disp.osl:30
+#     float raw2 = 0.5 + 0.5 * sin(spiralCoord2 * 2.0 * M_PI);  // Negative for opposite direction
+	mul		$tmp18 spiralCoord2 $const4 	%filename{"disp.osl"} %line{30} %argrw{"wrr"}
+	mul		$tmp19 $tmp18 $const5 	%argrw{"wrr"}
+	sin		$tmp17 $tmp19 	%argrw{"wr"}
+	mul		$tmp20 $const3 $tmp17 	%argrw{"wrr"}
+	add		raw2 $const3 $tmp20 	%argrw{"wrr"}
+# disp.osl:31
+#     float blend2 = pow(raw2, 0.25);  // Bias toward bright displacement
+	pow		blend2 raw2 $const6 	%line{31} %argrw{"wrr"}
+# disp.osl:34
+#     float n1 = noise("perlin", P * noiseFreq1);  // Larger procedural noise
+	mul		$tmp21 P noiseFreq1 	%line{34} %argrw{"wrr"}
+	noise		n1 $const7 $tmp21 	%argrw{"wrr"}
+# disp.osl:35
+#     float noisyBump1 = (n1 - 0.5) * 2.0 * noiseAmount1; // Centered at 0
+	sub		$tmp22 n1 $const3 	%line{35} %argrw{"wrr"}
+	mul		$tmp23 $tmp22 $const4 	%argrw{"wrr"}
+	mul		noisyBump1 $tmp23 noiseAmount1 	%argrw{"wrr"}
+# disp.osl:38
+#     float n2 = noise("perlin", P * noiseFreq2);  // Smaller procedural noise
+	mul		$tmp24 P noiseFreq2 	%line{38} %argrw{"wrr"}
+	noise		n2 $const7 $tmp24 	%argrw{"wrr"}
+# disp.osl:39
+#     float noisyBump2 = (n2 - 0.5) * 2.0 * noiseAmount2; // Centered at 0
+	sub		$tmp25 n2 $const3 	%line{39} %argrw{"wrr"}
+	mul		$tmp26 $tmp25 $const4 	%argrw{"wrr"}
+	mul		noisyBump2 $tmp26 noiseAmount2 	%argrw{"wrr"}
+# disp.osl:42
+#     float n3 = noise("perlin", P * noiseFreq3); 
+	mul		$tmp27 P noiseFreq3 	%line{42} %argrw{"wrr"}
+	noise		n3 $const7 $tmp27 	%argrw{"wrr"}
+# disp.osl:43
+#     float noisyBump3 = (n3 - 0.5) * 2.0 * noiseAmount3; 
+	sub		$tmp28 n3 $const3 	%line{43} %argrw{"wrr"}
+	mul		$tmp29 $tmp28 $const4 	%argrw{"wrr"}
+	mul		noisyBump3 $tmp29 noiseAmount3 	%argrw{"wrr"}
+# disp.osl:46
+#     resultF = scale1 * blend1 + scale2 * blend2 + noisyBump1 + noisyBump2 + noisyBump3;
+	mul		$tmp30 scale1 blend1 	%line{46} %argrw{"wrr"}
+	mul		$tmp31 scale2 blend2 	%argrw{"wrr"}
+	add		$tmp32 $tmp30 $tmp31 	%argrw{"wrr"}
+	add		$tmp33 $tmp32 noisyBump1 	%argrw{"wrr"}
+	add		$tmp34 $tmp33 noisyBump2 	%argrw{"wrr"}
+	add		resultF $tmp34 noisyBump3 	%argrw{"wrr"}
 	end

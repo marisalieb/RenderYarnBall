@@ -1,0 +1,25 @@
+
+shader
+disp(
+    float scale1 = 1.0,  // Larger displacement scale
+    float repeatU1 = 5.5,  // Larger spiral's repeatU
+    float repeatV1 = 1.0,  // Larger spiral's repeatV
+    float scale2 = 0.2,  // Smaller displacement scale
+    float repeatU2 = 2.5,  // Smaller spiral's repeatU (tighter)
+    float repeatV2 = 0.5,  // Smaller spiral's repeatV (tighter)
+    output float resultF = 0.0
+)
+{
+    // Larger spiral (goes one way)
+    float spiralCoord1 = mod(u * repeatU1 + v * repeatV1, 1.0);
+    float raw1 = 0.5 + 0.5 * sin(spiralCoord1 * 2.0 * M_PI);
+    float blend1 = pow(raw1, 0.25);  // Bias toward bright displacement
+
+    // Smaller spiral (goes the opposite way)
+    float spiralCoord2 = mod(u * repeatU2 + v * repeatV2, 1.0);
+    float raw2 = 0.5 + 0.5 * sin(-spiralCoord2 * 2.0 * M_PI);  // Negative for opposite direction
+    float blend2 = pow(raw2, 0.25);  // Bias toward bright displacement
+
+    // Combine the two displacement values (add them together for both effects)
+    resultF = scale1 * blend1 + scale2 * blend2;  // You can adjust the weighting here
+}

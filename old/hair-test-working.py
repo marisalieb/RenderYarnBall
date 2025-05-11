@@ -34,9 +34,11 @@ ri.Option("rib", {"string asciistyle": "indented"})
 
 print("Saving to:", os.getcwd())
 
-ri.Begin("__spherehair.rib")
+#ri.Begin("__spherehair.rib")
 #ri.Display("SphereHair", "it", "rgba")
-ri.Display("/home/s5723321/Renderman/Lecture3Lightingcopy3/hair_output.exr", "file", "rgba")
+#ri.Display("/home/s5723321/Renderman/Lecture3Lightingcopy3/hair_output.exr", "file", "rgba")
+ri.Begin("__render")  # or a filename like "pointlight.rib"
+ri.Display("torus-hair.tiff", "it", "rgb")
 #ri.Display("SphereHair", "it", "rgba")
 #ri.Display("hair_output.exr", "file", "rgba")
 

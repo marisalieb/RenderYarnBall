@@ -99,7 +99,7 @@ def main(
 
 
     # This is where you make the dome light visible to the camera:
-    ri.Attribute("visibility", {"camera": [1]})  # ✅ Right way to set visibility
+    ri.Attribute("visibility", {"camera": [1]})  
 
     ri.Light("PxrDomeLight", "domeLight", {
         "string lightColorMap": "photo_studio_loft_hall_1k.tex",
@@ -138,7 +138,7 @@ def main(
     ri.AttributeBegin()
     ri.Attribute("identifier", {"name": "floor"})
 
-    # Load JPG texture
+    # Load texture
     ri.Pattern("PxrTexture", "floorTexture", {
         "string filename": "wood_table_001_diff_1k.tex"  # Or the full path if needed
     })

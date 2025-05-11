@@ -1,19 +1,47 @@
-
 shader
 disp(
-    float scale = 1.0,
-    float repeatU = 5.5,
-    float repeatV = 1.0,
+    float scale1 = 1.0,           // Larger spiral scale
+    float repeatU1 = 5.5,
+    float repeatV1 = 1.0,
+
+    float scale2 = 0.2,           // Smaller spiral scale
+    float repeatU2 = 2.5,
+    float repeatV2 = 0.5,
+
+    float noiseAmount1 = 0.05,     // Strength of the noisy bump
+    float noiseFreq1 = 10.0,       // Frequency of noise
+
+    float noiseAmount2 = 0.02,    // Strength of the second (smaller) noisy bump
+    float noiseFreq2 = 25.0,      // Frequency of the second noise (finer bumps)
+
+    float noiseAmount3 = 0.05,    // Strength of the second (smaller) noisy bump
+    float noiseFreq3 = 10.0,
+
     output float resultF = 0.0
 )
 {
-    // Compute a spiral-like UV coordinate blend
-    float spiralCoord = mod(u * repeatU + v * repeatV, 1.0);
+    // Larger spiral (goes one way)
+    float spiralCoord1 = mod(u * repeatU1 + v * repeatV1, 1.0);
+    float raw1 = 0.5 + 0.5 * sin(spiralCoord1 * 2.0 * M_PI);
+    float blend1 = pow(raw1, 0.25);  // Bias toward bright displacement
 
-    // Use sine wave for smooth periodic displacement
-    float blend = 0.5 + 0.5 * sin(spiralCoord * 2.0 * M_PI);
+    // Smaller spiral (goes the opposite way)
+    float spiralCoord2 = mod(u * repeatU2 + v * repeatV2, 1.0);
+    float raw2 = 0.5 + 0.5 * sin(spiralCoord2 * 2.0 * M_PI);  // Negative for opposite direction
+    float blend2 = pow(raw2, 0.25);  // Bias toward bright displacement
 
-    // Scale to get actual displacement height
-    resultF = scale * blend;
+    // Noise bump 1 (larger)
+    float n1 = noise("perlin", P * noiseFreq1);  // Larger procedural noise
+    float noisyBump1 = (n1 - 0.5) * 2.0 * noiseAmount1; // Centered at 0
+
+    // Noise bump 2 (smaller)
+    float n2 = noise("perlin", P * noiseFreq2);  // Smaller procedural noise
+    float noisyBump2 = (n2 - 0.5) * 2.0 * noiseAmount2; // Centered at 0
+
+
+    float n3 = noise("perlin", P * noiseFreq3); 
+    float noisyBump3 = (n3 - 0.5) * 2.0 * noiseAmount3; 
+
+    // Combine
+    resultF = scale1 * blend1 + scale2 * blend2 + noisyBump1 + noisyBump2 + noisyBump3;
 }
-
