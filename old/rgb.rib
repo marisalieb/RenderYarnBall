@@ -1,0 +1,71 @@
+##RenderMan RIB
+version 3.04999995
+Option "searchpath" "string archive" ["./assets/:@"]
+Display "rgb.exr" "it" "rgba" 
+Format 1024 720 1
+Hider "raytrace" "int incremental" [1]
+ShadingRate 10
+PixelVariance 0.100000001
+Integrator "PxrPathTracer" "integrator" 
+Option "statistics" "filename" ["stats.txt"]
+Option "statistics" "endofframe" [1]
+Projection "perspective" "uniform float fov" [48]
+Rotate 12 1 0 0
+Translate 0 0.75 2.5
+WorldBegin 
+	TransformBegin 
+		AttributeBegin 
+			Declare "dayLight" "string"
+			Light "PxrEnvDayLight" "dayLight" "int day" [20] "int month" [6] "float hour" [10]
+		AttributeEnd 
+	TransformEnd 
+	AttributeBegin 
+		Attribute "identifier" "name" ["floor"]
+		Bxdf "PxrDiffuse" "smooth" "color diffuseColor" [0.800000012 0.800000012 0.800000012]
+		Polygon "vertex point P" [-1 -1 1 1 -1 1 1 -1 -2 -1 -1 -2]
+	AttributeEnd 
+	AttributeBegin 
+		Attribute "identifier" "name" ["buddha"]
+		TransformBegin 
+			Translate -0.5 -1 0
+			Rotate 180 0 1 0
+			Scale 0.100000001 0.100000001 0.100000001
+			Attribute "visibility" "int transmission" [1]
+			Attribute "trace" "int maxspeculardepth" [8] "int maxdiffusedepth" [1]
+			Bxdf "PxrSurface" "greenglass" "float diffuseGain" [0] "color extinction" [0 0.200000003 0] "float refractionGain" [1] "float reflectionGain" [1] "color refractionColor" [0 0.899999976 0] "float glassRoughness" [0.00999999978] "float glassIor" [1.5] "color specularEdgeColor" [0.200000003 1 0.200000003]
+			ReadArchive "buddha.zip!buddha.rib" 
+		TransformEnd 
+	AttributeEnd 
+	AttributeBegin 
+		Attribute "identifier" "name" ["sphere"]
+		Pattern "PxrVariable" "du" "string variable" ["du"] "string type" ["float"]
+		Pattern "PxrVariable" "dv" "string variable" ["dv"] "string type" ["float"]
+		Pattern "starBall" "starBall" "reference float du" ["du:resultR"] "reference float dv" ["dv:resultR"]
+		Bxdf "PxrDisney" "bxdf" "reference color baseColor" ["starBall:Cout"]
+		TransformBegin 
+			Translate 0.300000012 -0.699999988 0.300000012
+			Rotate -30 0 1 0
+			Rotate 20 1 0 0
+			Sphere 0.300000012 -0.300000012 0.300000012 360 
+		TransformEnd 
+	AttributeEnd 
+	AttributeBegin 
+		Attribute "identifier" "name" ["teapot"]
+		TransformBegin 
+			Translate 0 -1 -0.800000012
+			Rotate 45 0 1 0
+			Rotate -90 1 0 0
+			Scale 0.100000001 0.100000001 0.100000001
+			Bxdf "PxrSurface" "plastic" "color diffuseColor" [0.0399999991 0.50999999 0.100000001] "color clearcoatFaceColor" [0.5 0.5 0.5] "color clearcoatEdgeColor" [0.25 0.25 0.25]
+			Geometry "teapot" 
+		TransformEnd 
+	AttributeEnd 
+	AttributeBegin 
+		Bxdf "PxrSurface" "metal" "int specularFresnelMode" [1] "float diffuseGain" [0] "color specularExtinctionCoeff" [5.20642996 4.23136616 3.75496888] "float specularRoughness" [0.100000001] "integer specularModelType" [1] "color specularEdgeColor" [1 1 1] "color specularIor" [4.36968422 2.916713 1.65469801]
+		Attribute "identifier" "name" ["ncca"]
+		TransformBegin 
+			Translate 0 0.300000012 0.800000012
+			ReadArchive "ncca.rib" 
+		TransformEnd 
+	AttributeEnd 
+WorldEnd 

@@ -1,0 +1,20 @@
+##RenderMan RIB
+version 3.04999995
+Display "/home/s5723321/Renderman/Lecture3Lightingcopy3/hair_output2.exr" "file" "rgba" 
+Format 1024 1024 1
+Projection "perspective" "uniform float fov" [40]
+ShadingRate 1
+WorldBegin 
+	Translate 0 0 4
+	Rotate -30 1 0 0
+	Rotate -150 0 1 0
+	AttributeBegin 
+		Light "PxrDomeLight" "domeLight" "color lightColor" [1 1 1] "float intensity" [2]
+	AttributeEnd 
+	AttributeBegin 
+		Pattern "check" "check" "color baseColour" [0 0 0] "color stripeColour" [1 1 1] "float repeatU" [18] "float repeatV" [4] "float width" [0.100000001]
+		Bxdf "PxrSurface" "plastic" "reference color diffuseColor" ["check:resultRGB"] "int diffuseDoubleSided" [1]
+		Torus 1 0.300000012 0 360 360 
+		Attribute "visibility" "int transmission" [1]
+	AttributeEnd 
+WorldEnd 

@@ -1,0 +1,38 @@
+OpenShadingLanguage 1.00
+# Compiled by oslc 1.13.0.@PROJECT_VERSION_TWEAK@"dev"
+# options: 
+surface colorByPositionDiffuse
+param	color	color1	1 0 0		%read{4,4} %write{2147483647,-1}
+param	color	color2	0 0 1		%read{5,5} %write{2147483647,-1}
+param	float	threshold	0.5		%read{2,2} %write{2147483647,-1}
+global	point	P	%read{0,0} %write{2147483647,-1}
+global	normal	N	%read{6,6} %write{2147483647,-1}
+global	closure color	Ci	%read{2147483647,-1} %write{8,8}
+local	point	pos	%read{1,1} %write{0,0}
+local	float	dist	%read{2,2} %write{1,1}
+local	color	col	%read{8,8} %write{4,5}
+local	normal	Nn	%read{7,7} %write{6,6}
+temp	int	$tmp1	%read{3,3} %write{2,2}
+temp	closure color	$tmp2	%read{8,8} %write{7,7}
+const	string	$const1	"diffuse"		%read{7,7} %write{2147483647,-1}
+code ___main___
+# colorByPosition.osl:9
+#     point pos  = P;
+	assign		pos P 	%filename{"colorByPosition.osl"} %line{9} %argrw{"wr"}
+# colorByPosition.osl:10
+#     float dist = length(pos);
+	length		dist pos 	%line{10} %argrw{"wr"}
+# colorByPosition.osl:12
+#     color col  = (dist < threshold) ? color1 : color2;
+	lt		$tmp1 dist threshold 	%line{12} %argrw{"wrr"}
+	if		$tmp1 5 6 	%argrw{"r"}
+	assign		col color1 	%argrw{"wr"}
+	assign		col color2 	%argrw{"wr"}
+# colorByPosition.osl:15
+#     normal Nn = normalize(N);
+	normalize	Nn N 	%line{15} %argrw{"wr"}
+# colorByPosition.osl:17
+#     Ci = diffuse(Nn) * col;
+	closure		$tmp2 $const1 Nn 	%line{17} %argrw{"wrr"}
+	mul		Ci $tmp2 col 	%argrw{"wrr"}
+	end
