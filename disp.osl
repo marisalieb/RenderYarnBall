@@ -27,7 +27,7 @@ disp(
 
     // Smaller spiral (goes the opposite way)
     float spiralCoord2 = mod(u * repeatU2 + v * repeatV2, 1.0);
-    float raw2 = 0.5 + 0.5 * sin(spiralCoord2 * 2.0 * M_PI);  // Negative for opposite direction
+    float raw2 = 0.5 + 0.5 * sin(spiralCoord2 * 2.0 * M_PI);
     float blend2 = pow(raw2, 0.25);  // Bias toward bright displacement
 
     // Noise bump 1 (larger)
@@ -43,5 +43,5 @@ disp(
     float noisyBump3 = (n3 - 0.5) * 2.0 * noiseAmount3; 
 
     // Combine
-    resultF = scale1 * blend1 + scale2 * blend2 + noisyBump1 + noisyBump2 + noisyBump3;
+    resultF = (scale1 * blend1) + (scale2 * blend2) + noisyBump1 + noisyBump2 + noisyBump3;
 }

@@ -107,7 +107,7 @@ code ___main___
 	mul		$tmp16 $const1 $tmp14 	%argrw{"wrr"}
 	sub		spiralCoord2 $tmp13 $tmp16 	%argrw{"wrr"}
 # disp.osl:30
-#     float raw2 = 0.5 + 0.5 * sin(spiralCoord2 * 2.0 * M_PI);  // Negative for opposite direction
+#     float raw2 = 0.5 + 0.5 * sin(spiralCoord2 * 2.0 * M_PI);
 	mul		$tmp18 spiralCoord2 $const4 	%filename{"disp.osl"} %line{30} %argrw{"wrr"}
 	mul		$tmp19 $tmp18 $const5 	%argrw{"wrr"}
 	sin		$tmp17 $tmp19 	%argrw{"wr"}
@@ -144,7 +144,7 @@ code ___main___
 	mul		$tmp29 $tmp28 $const4 	%argrw{"wrr"}
 	mul		noisyBump3 $tmp29 noiseAmount3 	%argrw{"wrr"}
 # disp.osl:46
-#     resultF = scale1 * blend1 + scale2 * blend2 + noisyBump1 + noisyBump2 + noisyBump3;
+#     resultF = (scale1 * blend1) + (scale2 * blend2) + noisyBump1 + noisyBump2 + noisyBump3;
 	mul		$tmp30 scale1 blend1 	%line{46} %argrw{"wrr"}
 	mul		$tmp31 scale2 blend2 	%argrw{"wrr"}
 	add		$tmp32 $tmp30 $tmp31 	%argrw{"wrr"}

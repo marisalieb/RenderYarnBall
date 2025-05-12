@@ -22,8 +22,11 @@ def checkAndCompileShader(shader):
 # shadername2 = "check"
 # checkAndCompileShader(shadername2)
 
-shadername3 = "displace_noise"
-checkAndCompileShader(shadername3)
+# shadername3 = "displace_noise"
+# checkAndCompileShader(shadername3)
 
 shadername4 = "disp"
 checkAndCompileShader(shadername4)
+
+shadername5 = "spiralColour"
+checkAndCompileShader(shadername5)

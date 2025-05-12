@@ -10,14 +10,82 @@ import random
 import time
 
 
+
+def sample_torus(major_radius=1.0, minor_radius=0.3, count=500):
+    pts, norms = [], []
+    for _ in range(count):
+        u = random.uniform(0, 2 * math.pi)
+        v = random.uniform(0, 2 * math.pi)
+
+        x = (major_radius + minor_radius * math.cos(v)) * math.cos(u)
+        y = (major_radius + minor_radius * math.cos(v)) * math.sin(u)
+        z = minor_radius * math.sin(v)
+
+        # Surface normal at point
+        nx = math.cos(u) * math.cos(v)
+        ny = math.sin(u) * math.cos(v)
+        nz = math.sin(v)
+
+        pts.append((x, y, z))
+        norms.append((nx, ny, nz))
+    return pts, norms
+
+
+def generateHair(pts, widths, npts, count=900):
+    surface_pts, surface_norms = sample_torus(1.0, 0.3, count)
+    for (x, y, z), (nx, ny, nz) in zip(surface_pts, surface_norms):
+        # --- CURLY VARIATION USING MULTI-AXIS SINUSOIDAL FUNCTIONS ---
+        jitter = 1.5  # Randomness to introduce slight variation in curl direction
+        curl_strength = random.uniform(1.5, 3.0)  # Control how tightly the hair curls
+        
+        # Increased curl factor for tighter curls
+        curl_factor = random.uniform(15.0, 30.0)  # Higher frequency for tight, 4C curls
+        angle_offset = random.uniform(0, math.pi)  # Offset for randomizing the start of curls
+
+        # More control points for smoother and tighter curls
+        num_control_points = 10  # Increased control points for smoother, tighter curls
+        for i in range(num_control_points):  # Iterate through control points
+            t = i / (num_control_points - 1)  # Parametric range for the hair strand
+            
+            # Create multi-axis curls, one along X, one along Y, one along Z
+            curl_x = math.sin(curl_factor * t + angle_offset) * 0.6  # Larger curls in X
+            curl_y = math.cos(curl_factor * t + angle_offset) * 0.6  # Larger curls in Y
+            curl_z = math.sin(curl_factor * t + angle_offset) * 0.2  # Smaller curls in Z
+            
+            # Add a vertical offset for extra randomness (simulating coiled curls)
+            vertical_curl = math.cos(curl_factor * t * 2) * 0.2  # Vertical curl, gives it a coiled effect
+            curl_x += vertical_curl
+            curl_y += vertical_curl
+
+            # Combine with jitter and original direction for natural randomness
+            nx += random.uniform(-jitter, jitter) + curl_x
+            ny += random.uniform(-jitter, jitter) + curl_y
+            nz += random.uniform(-jitter, jitter) + curl_z
+
+            # Normalize the new direction vector
+            length = math.sqrt(nx * nx + ny * ny + nz * nz)
+            nx /= length
+            ny /= length
+            nz /= length
+
+            # Generate control points along the curly direction (longer hair strands)
+            px = x + nx * 0.12 * t  # Increase to make hairs longer
+            py = y + ny * 0.12 * t
+            pz = z + nz * 0.12 * t
+            pts.extend([px, py, pz])
+        
+        npts.append(num_control_points)  # Append the updated number of control points for each hair strand
+        widths.append(0.001)  # Width of the hair strand (adjust as needed for fuzziness)
+
+
 # Main rendering routine
 def main(
     filename,
-    shadingrate=10,
-    pixelvar=0.1,
+    shadingrate=1,
+    pixelvar=0.01,
     fov=48.0,
-    width=1024,
-    height=720,
+    width=1920,
+    height=1080,
     integrator="PxrPathTracer",
     integratorParams={},
 ):
@@ -102,7 +170,7 @@ def main(
     ri.Attribute("visibility", {"camera": [1]})  
 
     ri.Light("PxrDomeLight", "domeLight", {
-        "string lightColorMap": "photo_studio_loft_hall_1k.tex",
+        "string lightColorMap": "photo_studio_loft_hall_4k.tex",
         "float intensity": [0.8],
         "float exposure": [-1.0]
     })
@@ -172,25 +240,36 @@ def main(
 
     # YARN BALL
     ri.TransformBegin()
-    ri.Translate(0.3, -.85, -0.8)
-    # ri.AttributeBegin()
-    # ri.Bxdf("PxrDiffuse", "core_shader", {
-    #     "color diffuseColor": [0.1, 0.5, 0.7]  # Darker green
-    # })
-    # ri.Sphere(.2, -.2, .2, 360.0)  # Sphere at the center
-    # ri.AttributeEnd()
+    ri.Scale(0.7, 0.7, 0.7)
+
+    # ri.TransformBegin()
+    ri.Translate(-0.13, -.87, -1.318)
+    #ri.Scale(1.5, 1.5, 1.5)
+
+    #ri.Translate(0.1, 0.65, -1.35) # for close up!!!
+
+
+    # SPHERE
+    ri.AttributeBegin()
+    ri.Bxdf("PxrDiffuse", "core_shader", {
+        "color diffuseColor": [0.85, 0.75, 0.6]
+    })
+    #ri.Sphere(.515, -.515, .515, 360.0)  # Sphere at the center .4975
+    ri.AttributeEnd()
+    # ri.TransformEnd()
+    
 
     # Torus loops
-    num_tori = 1
+    num_tori = 1 # 150
 
     for i in range(num_tori):
         rx = math.sin(i * 1.1) * 180
         ry = math.cos(i * 0.7) * 180
         rz = math.sin(i * 0.3) * 180
 
-        tx = math.sin(i * 0.9) * 0.05
-        ty = math.cos(i * 0.6) * 0.05
-        tz = math.sin(i * 0.4) * 0.05
+        tx = math.sin(i * 0.69) * 0.015
+        ty = math.cos(i * 0.6) * 0.015
+        tz = math.sin(i * 0.64) * 0.015
 
         ri.TransformBegin()
 
@@ -200,18 +279,158 @@ def main(
         ri.Rotate(rz, 0, 0, 1)
 
         ri.AttributeBegin()
-        ri.Bxdf("PxrDiffuse", f"yarn_shader_{i}", {
-            "color diffuseColor": [0.2, 0.8, 0.2]  # Lighter green yarn
+
+        ri.Attribute("displacementbound", {"float sphere": [0.4]}) # .2
+        ri.Attribute("dice", {
+            "float micropolygonlength": [0.1]
         })
 
-        ri.Torus(.25, 0.0095, 0.0, 360.0, 360.0)
-        ri.AttributeEnd()
+        ri.Pattern(
+            "disp", "disp",
+            {
+                "float scale1": [.127],  # Larger displacement for the first spiral
+                "float repeatU1": [90],  # Repeat factor for the first spiral
+                "float repeatV1": [3.0],  # Repeat factor for the first spiral
 
-        #drawHairCurvesOnTorus(ri, torus_radius=0.25, num_curves=10, seed_offset=i)
+                "float scale2": [0.015],  # 0.04
+                "float repeatU2": [150],  # 
+                "float repeatV2": [-17],  # -7 
+
+                "float noiseAmount1": [0.035],   # Larger bumps noise strength
+                "float noiseFreq1": [.3],     # Larger bumps frequency
+
+                "float noiseAmount2": [0.02],   # 0.02, can make it bigger maybe slightly
+                "float noiseFreq2": [4.0]  ,    # between 4 and 5 
+
+                "float noiseAmount3": [0.00],   # maybe 0.005 or 0.002 but maybe more just slight stripes not bumps
+                "float noiseFreq3": [80.0]      # the smallest bumps on it
+            }
+        )
+
+
+
+        # Apply displacement shader
+        ri.Displace(
+            "PxrDisplace", "pxrdisp",
+            {"reference float dispScalar": ["disp:resultF"]}
+        )
+
+
+
+
+
+
+        ri.Pattern(
+            "spiralColour", "spiralColour",
+            {
+                #"float scale1": [.127],  # Larger displacement for the first spiral
+                "float repeatU": [700],  # Repeat factor for the first spiral
+                "float repeatV": [-150.0],  # Repeat factor for the first spiral
+                #"float blendSharpness" : [10],  # Blend sharpness for the color transition
+                "color colorA": [0.65, 0.55, 0.4],
+                "color colorB": [0.85, 0.75, 0.6],
+
+            }
+        )
+
+        ri.Bxdf("PxrSurface","yarnShader",
+        {
+            "float diffuseGain" : [1.0],
+            "reference color diffuseColor": ["spiralColour:resultRGB"],
+            #"color diffuseColor" : [0.85, 0.75, 0.6],  # Warm wool-like color
+            "float diffuseRoughness" : [0.5],
+            
+            # "float fuzzGain" : [0.2],  # Soft fuzziness
+            # "color fuzzColor" : [1.0, 0.9, 0.8],  # Light fuzz color (can be off-white)
+            
+            # "float subsurfaceGain" : [0.1],
+            # "color subsurfaceColor" : [0.85, 0.75, 0.6],  # Slightly warm subsurface
+            # "float subsurfaceDmfp" : [8.0],
+            
+            # "float specularRoughness" : [0.4],  # Slightly rough specular reflection
+            # "color specularFaceColor" : [0.0, 0.0, 0.0],
+            # "color specularEdgeColor" : [0.0, 0.0, 0.0],
+            
+            #"normal bumpNormal" : [0.05, 0.1, 0.02],  # Subtle bump map for texture
+        })
+
+        #ri.Torus(.325, 0.05, 0.0, 360.0, 360.0)
+        ri.Scale(.040510, .040510, .040510)
+        ri.Torus(13.251, 0.1481251, 0, 360, 360)
+        ri.AttributeEnd()
 
         ri.TransformEnd()
 
+        """
+                ri.Translate(-0.13, -.87, -1.318)
+                ri.Translate(0.1, 0.65, -1.35)
+                ri.Scale(0.7, 0.7, 0.7)
+                ri.Scale(.040510, .040510, .040510)
+                #ri.Torus(13.251, 0.1481251, 0, 360, 360)
+        """
+
+
+
+
+        # YARN HAIR
+        ri.TransformBegin()
+        ri.Scale(0.7, 0.7, 0.7)
+        #ri.Translate(-0.13, -.87, -1.318)
+        #ri.Translate(0.1, 0.65, -1.35)
+        # ri.Scale(0.9, 0.9, 0.9)
+        ri.Rotate(-40, 1, 0, 0)
+
+        hair_pts, hair_widths, hair_npts = [], [], []
+
+        # !!!!
+        generateHair(hair_pts, hair_widths, hair_npts, count=15000)
+
+        ri.AttributeBegin()
+        # ri.Bxdf('PxrMarschnerHair', 'hairShader', {
+        #     'float diffuseGain': [0.3],  # Allow some diffuse reflection
+        #     'color diffuseColor': [1.0, 0.9, 0.8],#[0.0, 1.0, 0.0],  # Green diffuse color
+        #     'color specularColorR': [1.0, 0.9, 0.8],#[0.2, 1.0, 0.2],  # Greenish specular reflections
+        #     'color specularColorTRT': [1.0, 0.9, 0.8], # [0.3, 1.0, 0.3],
+        #     'color specularColorTT': [1.0, 0.9, 0.8], # [0.3, 1.0, 0.3],
+        #     'float specularGainR': [1.0],
+        #     'float specularGainTRT': [1.0],
+        #     'float specularGainTT': [1.0]
+        # })
+        ri.Pattern("PxrFractal", "hairColorNoise", {
+            "int layers": [3],
+            "float frequency": [100.0],
+            "float gain": [0.5],
+            "float lacunarity": [2.0],
+            "int octaveCount": [4],
+            "color colorScale": [0.05, 0.05, 0.05],  # subtle variation
+            "color colorOffset": [1.0, 0.95, 0.9]   # base off-white tone
+        })
+
+        ri.Bxdf('PxrMarschnerHair', 'yarnHairShader', {
+            'float diffuseGain': [0.2],
+            'color diffuseColor': [1.0, 0.95, 0.9],
+
+            'reference color specularColorR': ['hairColorNoise:resultRGB'],
+            'color specularColorTRT': [1.0, 0.95, 0.9],
+            'color specularColorTT': [1.0, 0.95, 0.9],
+
+            'float specularGainR': [0.63],
+            'float specularGainTRT': [0.7],
+            'float specularGainTT': [0.6],
+        })
+
+
+        ri.Curves("cubic", hair_npts, "nonperiodic", {
+            ri.P: hair_pts,
+            "float width": hair_widths
+        })
+
+        ri.AttributeEnd()
+        ri.TransformEnd()
     ri.TransformEnd()
+
+        # Hair
+
 
 
     # end our world
@@ -219,47 +438,6 @@ def main(
     # and finally end the rib file
     ri.End()
 
-
-
-
-
-
-def drawHairCurvesOnTorus(ri, torus_radius=0.25, num_curves=10, seed_offset=0):
-    points = []  # This will hold all the points for all curves
-    width = []   # This will hold the width of each curve point
-    npoints = [] # This will hold the number of points per curve
-
-    random.seed(seed_offset)
-    ru = random.uniform
-
-    # Loop to generate multiple hair-like curves
-    for i in range(num_curves):
-        # Create random offsets for each curve's starting point
-        angle = ru(0, 2 * math.pi)  # Random angle on the torus
-        offset_x = torus_radius * math.cos(angle) + ru(-0.02, 0.02)  # Slight randomness to X
-        offset_z = torus_radius * math.sin(angle) + ru(-0.02, 0.02)  # Slight randomness to Z
-        offset_y = ru(0.05, 0.1)  # Random height for the curve above the torus
-
-        # Generate a cubic curve with at least 4 points
-        # Each curve will have 4 control points (x, y, z)
-        points.extend([offset_x, offset_y, offset_z])  # 1st point
-        points.extend([offset_x + ru(-0.01, 0.01), offset_y + ru(-0.02, 0.02), offset_z + ru(-0.01, 0.01)])  # 2nd point
-        points.extend([offset_x + ru(-0.01, 0.01), offset_y + ru(-0.02, 0.02), offset_z + ru(-0.01, 0.01)])  # 3rd point
-        points.extend([offset_x + ru(-0.01, 0.01), offset_y + ru(0.02, 0.05), offset_z + ru(-0.01, 0.01)])  # 4th point
-
-        # Set widths for the hair strands (optional)
-        # Each curve has 4 widths corresponding to its 4 points
-        width.extend([0.003, 0.002, 0.002, 0.003])  # Varying width values for each point
-        npoints.append(4)  # 4 points per cubic curve
-
-    # Now use the ri.Curves function to draw the curves with width as varying float
-    # We'll directly pass the varying width parameter for the curves
-    ri.AttributeBegin()  # Start a new attribute block to apply specific settings
-    ri.Attribute("varying float width", width)  # Pass the varying width parameter
-    ri.Curves("cubic", npoints, "nonperiodic", {
-        ri.P: points  # The list of all points for all curves
-    })
-    ri.AttributeEnd()  # End the attribute block
 
 
 
@@ -299,10 +477,10 @@ if __name__ == "__main__":
         "--fov", "-f", nargs="?", const=48.0, default=48.0, type=float, help="projection fov default 48.0"
     )
     parser.add_argument(
-        "--width", "-wd", nargs="?", const=1024, default=1024, type=int, help="width of image default 1024"
+        "--width", "-wd", nargs="?", const=1024, default=1920, type=int, help="width of image default 1024"
     )
     parser.add_argument(
-        "--height", "-ht", nargs="?", const=720, default=720, type=int, help="height of image default 720"
+        "--height", "-ht", nargs="?", const=720, default=1080, type=int, help="height of image default 720"
     )
 
     parser.add_argument("--rib", "-r", action="count", help="render to rib not framebuffer")
@@ -316,8 +494,8 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
 
-    shadingrate = args.shadingrate if args.shadingrate is not None else 10.0
-    pixelvar = args.pixelvar if args.pixelvar is not None else 0.1
+    shadingrate = args.shadingrate if args.shadingrate is not None else 1.0
+    pixelvar = args.pixelvar if args.pixelvar is not None else 0.01
     fov = args.fov if args.fov is not None else 48.0
     width = args.width if args.width is not None else 1024
     height = args.height if args.height is not None else 720

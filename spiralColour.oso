@@ -1,0 +1,42 @@
+OpenShadingLanguage 1.00
+# Compiled by oslc 1.13.0.@PROJECT_VERSION_TWEAK@"dev"
+# options: 
+shader spiralColour
+param	float	repeatU	5.5		%read{0,0} %write{2147483647,-1}
+param	float	repeatV	1		%read{1,1} %write{2147483647,-1}
+param	color	colorA	0.850000024 0.75 0.600000024		%read{9,9} %write{2147483647,-1}
+param	color	colorB	0.5 0.300000012 0.200000003		%read{9,9} %write{2147483647,-1}
+oparam	color	resultRGB	0 0 0		%read{2147483647,-1} %write{9,9}
+global	float	u	%read{0,0} %write{2147483647,-1}
+global	float	v	%read{1,1} %write{2147483647,-1}
+local	float	spiralCoord	%read{8,8} %write{7,7}
+local	float	stripe	%read{9,9} %write{8,8}
+temp	float	$tmp1	%read{2,2} %write{0,0}
+temp	float	$tmp2	%read{2,2} %write{1,1}
+temp	float	$tmp3	%read{4,7} %write{2,2}
+const	float	$const1	1		%read{4,6} %write{2147483647,-1}
+const	string	$const2	"mod"		%read{3,3} %write{2147483647,-1}
+temp	float	$tmp4	%read{6,6} %write{5,5}
+temp	float	$tmp5	%read{5,5} %write{4,4}
+temp	float	$tmp6	%read{7,7} %write{6,6}
+const	float	$const3	0.5		%read{8,8} %write{2147483647,-1}
+code ___main___
+# spiralColour.osl:11
+#     float spiralCoord = mod(u * repeatU + v * repeatV, 1.0);
+	mul		$tmp1 u repeatU 	%filename{"spiralColour.osl"} %line{11} %argrw{"wrr"}
+	mul		$tmp2 v repeatV 	%argrw{"wrr"}
+	add		$tmp3 $tmp1 $tmp2 	%argrw{"wrr"}
+	functioncall	$const2 8 	%argrw{"r"}
+# /opt/pixar/RenderManProServer-26.2/lib/osl/include/stdosl.h:132
+# float  mod (float  a, float  b) { return a - b*floor(a/b); }
+	div		$tmp5 $tmp3 $const1 	%filename{"/opt/pixar/RenderManProServer-26.2/lib/osl/include/stdosl.h"} %line{132} %argrw{"wrr"}
+	floor		$tmp4 $tmp5 	%argrw{"wr"}
+	mul		$tmp6 $const1 $tmp4 	%argrw{"wrr"}
+	sub		spiralCoord $tmp3 $tmp6 	%argrw{"wrr"}
+# spiralColour.osl:14
+#     float stripe = step(0.5, spiralCoord);      // 0 or 1 only
+	step		stripe $const3 spiralCoord 	%filename{"spiralColour.osl"} %line{14} %argrw{"wrr"}
+# spiralColour.osl:17
+#     resultRGB = mix(colorA, colorB, stripe);    // stripe is 0 or 1
+	mix		resultRGB colorA colorB stripe 	%line{17} %argrw{"wrrr"}
+	end
