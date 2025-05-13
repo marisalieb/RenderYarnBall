@@ -29,4 +29,4 @@ shadername4 = "disp"
 checkAndCompileShader(shadername4)
 
 shadername5 = "spiralColour"
-checkAndCompileShader(shadername5)
+checkAndCompileShader(shadername5) bigger maybe slightly

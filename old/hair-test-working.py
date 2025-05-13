@@ -15,7 +15,7 @@ def uniform_sphere_sample(count):
         norms.append((x, z, y))
     return pts, norms
 
-def generateHair(pts, widths, npts, count=300):
+def generateHairSphere(pts, widths, npts, count=300):
     surface_pts, surface_norms = uniform_sphere_sample(count)
     for (x, y, z), (nx, ny, nz) in zip(surface_pts, surface_norms):
         # each curve has 4 control points
@@ -57,7 +57,7 @@ ri.AttributeEnd()
 
 # Generate hair
 hair_pts, hair_widths, hair_npts = [], [], []
-generateHair(hair_pts, hair_widths, hair_npts, count=500)
+generateHairSphere(hair_pts, hair_widths, hair_npts, count=500)
 
 ri.AttributeBegin()
 ri.Bxdf("PxrMarschnerHair", "hairShader", {"color diffuseColor": [0.6, 0.4, 0.3]})
