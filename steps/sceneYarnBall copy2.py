@@ -31,9 +31,8 @@ def sample_torus(major_radius=1.0, minor_radius=0.3, count=500):
     return pts, norms
 
 
-def generateHair(pts, widths, npts, count=900, major_radius=1.0, minor_radius=0.3, hair_length=0.02, hair_width=0.001):
-    #surface_pts, surface_norms = sample_torus(1.0, 0.01118, count)
-    surface_pts, surface_norms = sample_torus(major_radius, minor_radius, count)
+def generateHair(pts, widths, npts, count=900):
+    surface_pts, surface_norms = sample_torus(1.0, 0.01118, count)
     for (x, y, z), (nx, ny, nz) in zip(surface_pts, surface_norms):
         # --- CURLY VARIATION USING MULTI-AXIS SINUSOIDAL FUNCTIONS ---
         jitter = 1.5  # Randomness to introduce slight variation in curl direction
@@ -70,13 +69,13 @@ def generateHair(pts, widths, npts, count=900, major_radius=1.0, minor_radius=0.
             nz /= length
 
             # Generate control points along the curly direction (longer hair strands)
-            px = x + nx * hair_length * t  # Increase to make hairs longer 0.012
-            py = y + ny * hair_length * t
-            pz = z + nz * hair_length * t
+            px = x + nx * 0.12 * t  # Increase to make hairs longer
+            py = y + ny * 0.12 * t
+            pz = z + nz * 0.12 * t
             pts.extend([px, py, pz])
         
         npts.append(num_control_points)  # Append the updated number of control points for each hair strand
-        widths.append(hair_width)  # 0.001 beofre but maybe too thick; Width of the hair strand (adjust as needed for fuzziness)
+        widths.append(0.001)  # Width of the hair strand (adjust as needed for fuzziness)
 
 
 # Main rendering routine
@@ -247,38 +246,21 @@ def main(
     ri.Translate(-0.13, -.87, -1.318)
     #ri.Scale(1.5, 1.5, 1.5)
 
-    ri.Translate(0.1, 0.65, -1.35) # ADD this for close up!!!
+    #ri.Translate(0.1, 0.65, -1.35) # for close up!!!
 
 
     # SPHERE
     ri.AttributeBegin()
-    ri.Bxdf("PxrSurface", "yarnBallShader",
-    {
-        "float diffuseGain" : [0.9],  # Bring back warmth
-        "color diffuseColor" : [1.0, 0.95, 0.9],  # Slightly warmer diffuse
-        "float diffuseRoughness" : [0.5],
-
-        # "float fuzzGain" : [0.25],
-        # "color fuzzColor" : [1.0, 0.95, 0.85],  # Slightly warmer fuzz
-
-        # "float subsurfaceGain" : [0.15],
-        # "color subsurfaceColor" : [0.85, 0.75, 0.6],
-        # "float subsurfaceDmfp" : [6.0],  # Slightly shallower scatter
-
-        # "float specularRoughness" : [0.25],  # Not too sharp, not too dull
-        # "color specularFaceColor" : [0.6, 0.55, 0.5],  # Tint specular warm
-        # "color specularEdgeColor" : [0.9, 0.8, 0.75],  # Stronger fresnel at glancing angles
-
-        #"float clearcoatGain" : [0.3],  # Optional: soft gloss layer
-        #"float clearcoatRoughness" : [0.2],
+    ri.Bxdf("PxrDiffuse", "core_shader", {
+        "color diffuseColor": [0.85, 0.75, 0.6]
     })
-    ri.Sphere(.515, -.515, .515, 360.0)  # Sphere at the center .4975
+    #ri.Sphere(.515, -.515, .515, 360.0)  # Sphere at the center .4975
     ri.AttributeEnd()
-
+    # ri.TransformEnd()
     
 
     # Torus loops
-    num_tori = 100 # 150
+    num_tori = 1 # 150
 
     for i in range(num_tori):
         rx = math.sin(i * 1.1) * 180
@@ -325,6 +307,8 @@ def main(
             }
         )
 
+
+
         # Apply displacement shader
         ri.Displace(
             "PxrDisplace", "pxrdisp",
@@ -332,7 +316,10 @@ def main(
         )
 
 
-        # colour spiral pattern to simulate strands of fibres
+
+
+
+
         ri.Pattern(
             "spiralColour", "spiralColour",
             {
@@ -346,32 +333,33 @@ def main(
             }
         )
 
-        ri.Bxdf("PxrSurface", "yarnShader",
+        ri.Bxdf("PxrSurface","yarnShader",
         {
-            "float diffuseGain" : [0.9],  # Bring back warmth
+            "float diffuseGain" : [1.0],
             "reference color diffuseColor": ["spiralColour:resultRGB"],
-            "float diffuseRoughness" : [0.6],  # Softer light scatter
-
-            "float fuzzGain" : [0.3],  # Increase fuzz for soft, warm look
-            "color fuzzColor" : [1.0, 0.95, 0.85],
-
-            "float subsurfaceGain" : [0.2],
-            "color subsurfaceColor" : [0.85, 0.75, 0.6],
-            "float subsurfaceDmfp" : [5.0],  # Shorter scattering = less waxy
-
-            "float specularRoughness" : [0.35],  # Slightly blurrier reflections
-            "color specularFaceColor" : [0.3, 0.28, 0.25],  # Even softer warm specular
-            "color specularEdgeColor" : [0.5, 0.45, 0.4],  # Milder fresnel effect
-
+            #"color diffuseColor" : [0.85, 0.75, 0.6],  # Warm wool-like color
+            "float diffuseRoughness" : [0.5],
+            
+            "float fuzzGain" : [0.2],  # Soft fuzziness
+            "color fuzzColor" : [1.0, 0.9, 0.8],  # Light fuzz color (can be off-white)
+            
+            "float subsurfaceGain" : [0.1],
+            "color subsurfaceColor" : [0.85, 0.75, 0.6],  # Slightly warm subsurface
+            "float subsurfaceDmfp" : [8.0],
+            
+            "float specularRoughness" : [0.4],  # Slightly rough specular reflection
+            "color specularFaceColor" : [0.0, 0.0, 0.0],
+            "color specularEdgeColor" : [0.0, 0.0, 0.0],
+            
+            #"normal bumpNormal" : [0.05, 0.1, 0.02],  # Subtle bump map for texture
         })
-
 
         #ri.Torus(.325, 0.05, 0.0, 360.0, 360.0)
         ri.Scale(.040510, .040510, .040510)
         ri.Torus(13.251, 0.1481251, 0, 360, 360)
         ri.AttributeEnd()
 
-        # ri.TransformEnd()
+        ri.TransformEnd()
 
         """
                 ri.Scale(0.7, 0.7, 0.7)
@@ -388,25 +376,21 @@ def main(
                 ri.Torus(1.0, 0.01118, 0, 360, 360)
         """
 
+
+
+
         # YARN HAIR
         ri.TransformBegin()
 
         #ri.Translate(-0.13, -.87, -1.318)
         #ri.Translate(0.1, 0.65, -1.35)
-        #ri.Scale(0.3759, 0.3759, 0.3759)
-        # ri.Scale(0.6, 0.6, 0.6)
-        # ri.Rotate(-40, 1, 0, 0)
-        # Match the effective torus radii
-        effective_major = 13.251 * 0.040510
-        effective_minor = 0.1481251 * 0.040510
-        hairlength = 0.02
-        hairwidth = 0.0001
-
+        ri.Scale(0.3759, 0.3759, 0.3759)
+        ri.Rotate(-40, 1, 0, 0)
 
         hair_pts, hair_widths, hair_npts = [], [], []
 
         # !!!!
-        generateHair(hair_pts, hair_widths, hair_npts, count=3000, major_radius=effective_major, minor_radius=effective_minor, hair_length=hairlength, hair_width=hairwidth)
+        generateHair(hair_pts, hair_widths, hair_npts, count=1500)
 
         ri.AttributeBegin()
         # ri.Bxdf('PxrMarschnerHair', 'hairShader', {
@@ -419,53 +403,28 @@ def main(
         #     'float specularGainTRT': [1.0],
         #     'float specularGainTT': [1.0]
         # })
-
-        # ri.Pattern("PxrFractal", "hairColorNoise", {
-        #     "int layers": [3],
-        #     "float frequency": [100.0],
-        #     "float gain": [0.5],
-        #     "float lacunarity": [2.0],
-        #     "int octaveCount": [4],
-        #     "color colorScale": [0.1, 0.08, 0.07],  # subtle variation
-        #     "color colorOffset": [.95, 0.9, 0.85]   # base off-white tone
-        # })
-
-        # ri.Bxdf('PxrMarschnerHair', 'yarnHairShader', {
-        #     'float diffuseGain': [0.4],
-        #     'color diffuseColor': [1.0, 0.95, 0.9],
-
-        #     'reference color specularColorR': ['hairColorNoise:resultRGB'],
-        #     'color specularColorTRT': [1.0, 0.95, 0.9],
-        #     'color specularColorTT': [1.0, 0.9, 0.8],
-
-        #     'float specularGainR': [0.25],
-        #     'float specularGainTRT': [0.4],
-        #     'float specularGainTT': [0.4],
-        # })
-
         ri.Pattern("PxrFractal", "hairColorNoise", {
             "int layers": [3],
             "float frequency": [100.0],
             "float gain": [0.5],
             "float lacunarity": [2.0],
             "int octaveCount": [4],
-            "color colorScale": [0.12, 0.08, 0.06],
-            "color colorOffset": [0.95, 0.85, 0.75]
+            "color colorScale": [0.05, 0.05, 0.05],  # subtle variation
+            "color colorOffset": [1.0, 0.95, 0.9]   # base off-white tone
         })
 
         ri.Bxdf('PxrMarschnerHair', 'yarnHairShader', {
-            'float diffuseGain': [0.4],
-            'color diffuseColor': [0.95, 0.85, 0.75],
+            'float diffuseGain': [0.2],
+            'color diffuseColor': [1.0, 0.95, 0.9],
 
             'reference color specularColorR': ['hairColorNoise:resultRGB'],
-            'color specularColorTRT': [1.0, 0.85, 0.7],
-            'color specularColorTT': [1.0, 0.8, 0.6],
+            'color specularColorTRT': [1.0, 0.95, 0.9],
+            'color specularColorTT': [1.0, 0.95, 0.9],
 
-            'float specularGainR': [0.2],         # dialed down reflection
-            'float specularGainTRT': [0.4],
-            'float specularGainTT': [0.4],
+            'float specularGainR': [0.63],
+            'float specularGainTRT': [0.7],
+            'float specularGainTT': [0.6],
         })
-
 
 
         ri.Curves("cubic", hair_npts, "nonperiodic", {
@@ -475,8 +434,6 @@ def main(
 
         ri.AttributeEnd()
         ri.TransformEnd()
-        ri.TransformEnd()
-
     ri.TransformEnd()
 
         # Hair
