@@ -1,0 +1,163 @@
+OpenShadingLanguage 1.00
+# Compiled by oslc 1.13.0.@PROJECT_VERSION_TWEAK@"dev"
+# options: 
+shader disp_wobbly
+param	float	scale1	1		%read{45,45} %write{2147483647,-1}
+param	float[2]	st	0.5 0.5		%read{0,1} %write{2147483647,-1}
+param	float	scale2	0.200000003		%read{46,46} %write{2147483647,-1}
+param	float	repeatU2	2.5		%read{16,16} %write{2147483647,-1}
+param	float	repeatV2	0.5		%read{17,17} %write{2147483647,-1}
+param	float	noiseAmount1	0.0500000007		%read{34,34} %write{2147483647,-1}
+param	float	noiseFreq1	10		%read{30,30} %write{2147483647,-1}
+param	float	noiseAmount2	0.0199999996		%read{39,39} %write{2147483647,-1}
+param	float	noiseFreq2	25		%read{35,35} %write{2147483647,-1}
+param	float	noiseAmount3	0.0500000007		%read{44,44} %write{2147483647,-1}
+param	float	noiseFreq3	10		%read{40,40} %write{2147483647,-1}
+oparam	float	resultF	0		%read{2147483647,-1} %write{50,50}
+global	point	P	%read{30,40} %write{2147483647,-1}
+global	float	u	%read{2,16} %write{2147483647,-1}
+global	float	v	%read{3,17} %write{2147483647,-1}
+local	float	repeatU1	%read{2,2} %write{0,0}
+local	float	repeatV1	%read{3,3} %write{1,1}
+local	float	spiralCoord1	%read{10,10} %write{9,9}
+local	float	raw1	%read{15,15} %write{14,14}
+local	float	blend1	%read{45,45} %write{15,15}
+local	float	spiralCoord2	%read{24,24} %write{23,23}
+local	float	raw2	%read{29,29} %write{28,28}
+local	float	blend2	%read{46,46} %write{29,29}
+local	float	n1	%read{32,32} %write{31,31}
+local	float	noisyBump1	%read{48,48} %write{34,34}
+local	float	n2	%read{37,37} %write{36,36}
+local	float	noisyBump2	%read{49,49} %write{39,39}
+local	float	n3	%read{42,42} %write{41,41}
+local	float	noisyBump3	%read{50,50} %write{44,44}
+const	int	$const1	0		%read{0,0} %write{2147483647,-1}
+const	int	$const2	1		%read{1,1} %write{2147483647,-1}
+temp	float	$tmp1	%read{4,4} %write{2,2}
+temp	float	$tmp2	%read{4,4} %write{3,3}
+temp	float	$tmp3	%read{6,9} %write{4,4}
+const	float	$const3	1		%read{6,22} %write{2147483647,-1}
+const	string	$const4	"mod"		%read{5,19} %write{2147483647,-1}
+temp	float	$tmp4	%read{8,8} %write{7,7}
+temp	float	$tmp5	%read{7,7} %write{6,6}
+temp	float	$tmp6	%read{9,9} %write{8,8}
+const	float	$const5	0.5		%read{13,42} %write{2147483647,-1}
+temp	float	$tmp7	%read{13,13} %write{12,12}
+const	float	$const6	2		%read{10,43} %write{2147483647,-1}
+temp	float	$tmp8	%read{11,11} %write{10,10}
+const	float	$const7	3.14159274		%read{11,25} %write{2147483647,-1}
+temp	float	$tmp9	%read{12,12} %write{11,11}
+temp	float	$tmp10	%read{14,14} %write{13,13}
+const	float	$const8	0.25		%read{15,29} %write{2147483647,-1}
+temp	float	$tmp11	%read{18,18} %write{16,16}
+temp	float	$tmp12	%read{18,18} %write{17,17}
+temp	float	$tmp13	%read{20,23} %write{18,18}
+temp	float	$tmp14	%read{22,22} %write{21,21}
+temp	float	$tmp15	%read{21,21} %write{20,20}
+temp	float	$tmp16	%read{23,23} %write{22,22}
+temp	float	$tmp17	%read{27,27} %write{26,26}
+temp	float	$tmp18	%read{25,25} %write{24,24}
+temp	float	$tmp19	%read{26,26} %write{25,25}
+temp	float	$tmp20	%read{28,28} %write{27,27}
+const	string	$const9	"perlin"		%read{31,41} %write{2147483647,-1}
+temp	point	$tmp21	%read{31,31} %write{30,30}
+temp	float	$tmp22	%read{33,33} %write{32,32}
+temp	float	$tmp23	%read{34,34} %write{33,33}
+temp	point	$tmp24	%read{36,36} %write{35,35}
+temp	float	$tmp25	%read{38,38} %write{37,37}
+temp	float	$tmp26	%read{39,39} %write{38,38}
+temp	point	$tmp27	%read{41,41} %write{40,40}
+temp	float	$tmp28	%read{43,43} %write{42,42}
+temp	float	$tmp29	%read{44,44} %write{43,43}
+temp	float	$tmp30	%read{47,47} %write{45,45}
+temp	float	$tmp31	%read{47,47} %write{46,46}
+temp	float	$tmp32	%read{48,48} %write{47,47}
+temp	float	$tmp33	%read{49,49} %write{48,48}
+temp	float	$tmp34	%read{50,50} %write{49,49}
+code ___main___
+# disp_wobbly.osl:22
+#     float repeatU1 = st[0];
+	aref		repeatU1 st $const1 	%filename{"disp_wobbly.osl"} %line{22} %argrw{"wrr"}
+# disp_wobbly.osl:23
+#     float repeatV1 = st[1];
+	aref		repeatV1 st $const2 	%line{23} %argrw{"wrr"}
+# disp_wobbly.osl:26
+#     float spiralCoord1 = mod(u * repeatU1 + v * repeatV1, 1.0);
+	mul		$tmp1 u repeatU1 	%line{26} %argrw{"wrr"}
+	mul		$tmp2 v repeatV1 	%argrw{"wrr"}
+	add		$tmp3 $tmp1 $tmp2 	%argrw{"wrr"}
+	functioncall	$const4 10 	%argrw{"r"}
+# /opt/pixar/RenderManProServer-26.2/lib/osl/include/stdosl.h:132
+# float  mod (float  a, float  b) { return a - b*floor(a/b); }
+	div		$tmp5 $tmp3 $const3 	%filename{"/opt/pixar/RenderManProServer-26.2/lib/osl/include/stdosl.h"} %line{132} %argrw{"wrr"}
+	floor		$tmp4 $tmp5 	%argrw{"wr"}
+	mul		$tmp6 $const3 $tmp4 	%argrw{"wrr"}
+	sub		spiralCoord1 $tmp3 $tmp6 	%argrw{"wrr"}
+# disp_wobbly.osl:27
+#     float raw1 = 0.5 + 0.5 * sin(spiralCoord1 * 2.0 * M_PI);
+	mul		$tmp8 spiralCoord1 $const6 	%filename{"disp_wobbly.osl"} %line{27} %argrw{"wrr"}
+	mul		$tmp9 $tmp8 $const7 	%argrw{"wrr"}
+	sin		$tmp7 $tmp9 	%argrw{"wr"}
+	mul		$tmp10 $const5 $tmp7 	%argrw{"wrr"}
+	add		raw1 $const5 $tmp10 	%argrw{"wrr"}
+# disp_wobbly.osl:28
+#     float blend1 = pow(raw1, 0.25);  // Bias toward bright displacement
+	pow		blend1 raw1 $const8 	%line{28} %argrw{"wrr"}
+# disp_wobbly.osl:31
+#     float spiralCoord2 = mod(u * repeatU2 + v * repeatV2, 1.0);
+	mul		$tmp11 u repeatU2 	%line{31} %argrw{"wrr"}
+	mul		$tmp12 v repeatV2 	%argrw{"wrr"}
+	add		$tmp13 $tmp11 $tmp12 	%argrw{"wrr"}
+	functioncall	$const4 24 	%argrw{"r"}
+# /opt/pixar/RenderManProServer-26.2/lib/osl/include/stdosl.h:132
+# float  mod (float  a, float  b) { return a - b*floor(a/b); }
+	div		$tmp15 $tmp13 $const3 	%filename{"/opt/pixar/RenderManProServer-26.2/lib/osl/include/stdosl.h"} %line{132} %argrw{"wrr"}
+	floor		$tmp14 $tmp15 	%argrw{"wr"}
+	mul		$tmp16 $const3 $tmp14 	%argrw{"wrr"}
+	sub		spiralCoord2 $tmp13 $tmp16 	%argrw{"wrr"}
+# disp_wobbly.osl:32
+#     float raw2 = 0.5 + 0.5 * sin(spiralCoord2 * 2.0 * M_PI);
+	mul		$tmp18 spiralCoord2 $const6 	%filename{"disp_wobbly.osl"} %line{32} %argrw{"wrr"}
+	mul		$tmp19 $tmp18 $const7 	%argrw{"wrr"}
+	sin		$tmp17 $tmp19 	%argrw{"wr"}
+	mul		$tmp20 $const5 $tmp17 	%argrw{"wrr"}
+	add		raw2 $const5 $tmp20 	%argrw{"wrr"}
+# disp_wobbly.osl:33
+#     float blend2 = pow(raw2, 0.25);  // Bias toward bright displacement
+	pow		blend2 raw2 $const8 	%line{33} %argrw{"wrr"}
+# disp_wobbly.osl:36
+#     float n1 = noise("perlin", P * noiseFreq1);  // Larger procedural noise
+	mul		$tmp21 P noiseFreq1 	%line{36} %argrw{"wrr"}
+	noise		n1 $const9 $tmp21 	%argrw{"wrr"}
+# disp_wobbly.osl:37
+#     float noisyBump1 = (n1 - 0.5) * 2.0 * noiseAmount1; // Centered at 0
+	sub		$tmp22 n1 $const5 	%line{37} %argrw{"wrr"}
+	mul		$tmp23 $tmp22 $const6 	%argrw{"wrr"}
+	mul		noisyBump1 $tmp23 noiseAmount1 	%argrw{"wrr"}
+# disp_wobbly.osl:40
+#     float n2 = noise("perlin", P * noiseFreq2);  // Smaller procedural noise
+	mul		$tmp24 P noiseFreq2 	%line{40} %argrw{"wrr"}
+	noise		n2 $const9 $tmp24 	%argrw{"wrr"}
+# disp_wobbly.osl:41
+#     float noisyBump2 = (n2 - 0.5) * 2.0 * noiseAmount2; // Centered at 0
+	sub		$tmp25 n2 $const5 	%line{41} %argrw{"wrr"}
+	mul		$tmp26 $tmp25 $const6 	%argrw{"wrr"}
+	mul		noisyBump2 $tmp26 noiseAmount2 	%argrw{"wrr"}
+# disp_wobbly.osl:44
+#     float n3 = noise("perlin", P * noiseFreq3); 
+	mul		$tmp27 P noiseFreq3 	%line{44} %argrw{"wrr"}
+	noise		n3 $const9 $tmp27 	%argrw{"wrr"}
+# disp_wobbly.osl:45
+#     float noisyBump3 = (n3 - 0.5) * 2.0 * noiseAmount3; 
+	sub		$tmp28 n3 $const5 	%line{45} %argrw{"wrr"}
+	mul		$tmp29 $tmp28 $const6 	%argrw{"wrr"}
+	mul		noisyBump3 $tmp29 noiseAmount3 	%argrw{"wrr"}
+# disp_wobbly.osl:48
+#     resultF = (scale1 * blend1) + (scale2 * blend2) + noisyBump1 + noisyBump2 + noisyBump3;
+	mul		$tmp30 scale1 blend1 	%line{48} %argrw{"wrr"}
+	mul		$tmp31 scale2 blend2 	%argrw{"wrr"}
+	add		$tmp32 $tmp30 $tmp31 	%argrw{"wrr"}
+	add		$tmp33 $tmp32 noisyBump1 	%argrw{"wrr"}
+	add		$tmp34 $tmp33 noisyBump2 	%argrw{"wrr"}
+	add		resultF $tmp34 noisyBump3 	%argrw{"wrr"}
+	end

@@ -24,7 +24,7 @@ disp(
     float spiralCoord1 = mod(u * repeatU1 + v * repeatV1, 1.0);
     float raw1 = 0.5 + 0.5 * sin(spiralCoord1 * 2.0 * M_PI);
     float blend1 = pow(raw1, 0.25);  // Bias toward bright displacement
-
+ 
     // Smaller spiral (goes the opposite way)
     float spiralCoord2 = mod(u * repeatU2 + v * repeatV2, 1.0);
     float raw2 = 0.5 + 0.5 * sin(spiralCoord2 * 2.0 * M_PI);

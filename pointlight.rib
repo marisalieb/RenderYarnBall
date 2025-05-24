@@ -1,0 +1,76 @@
+##RenderMan RIB
+version 3.04999995
+Option "searchpath" "string archive" ["./assets/:@"]
+Option "searchpath" "string texture" ["./textures/:@"]
+Display "scene.exr" "it" "rgba" 
+Format 1920 1080 1
+Hider "raytrace" "int incremental" [1]
+ShadingRate 10
+PixelVariance 0.100000001
+Integrator "PxrPathTracer" "integrator" 
+Option "statistics" "filename" ["stats.txt"]
+Option "statistics" "endofframe" [1]
+Projection "perspective" "uniform float fov" [48] "float fstop" [2] "float focalLength" [50] "float focusDistance" [2.5]
+Rotate -5 1 0 0
+Translate 0 0.5 2
+WorldBegin 
+TransformBegin 
+AttributeBegin 
+Declare "domeLight" "string"
+Declare "lightColorMap" "uniform string"
+Rotate 225 0 1 0
+Rotate -85 1 0 0
+Rotate 10 0 0 1
+Attribute "visibility" "camera" [1]
+Light "PxrDomeLight" "domeLight" "string lightColorMap" ["photo_studio_loft_hall_4k.tex"] "float intensity" [0.800000012] "float exposure" [-1]
+AttributeEnd 
+TransformEnd 
+TransformBegin 
+Translate 0 -0.150000006 0
+Rotate 90 0 1 0
+Scale 1 1 1.5
+Translate 0 0 0.314999998
+AttributeBegin 
+Attribute "identifier" "name" ["floor"]
+Pattern "PxrTexture" "floorTexture" "string filename" ["wood_table_001_diff_1k.tex"]
+Pattern "PxrTexture" "floorRoughness" "string filename" ["wood_table_001_rough_1k.tex"]
+Bxdf "PxrSurface" "smooth" "reference color diffuseColor" ["floorTexture:resultRGB"] "reference float specularRoughness" ["floorRoughness:resultR"]
+Polygon "P" [-1 -1 1 1 -1 1 1 -1 -2 -1 -1 -2] "st" [0 0 1 0 1 1 0 1]
+AttributeEnd 
+TransformEnd 
+TransformBegin 
+Scale 0.699999988 0.699999988 0.699999988
+Translate -0.129999995 -0.870000005 -1.31799996
+AttributeBegin 
+Bxdf "PxrSurface" "yarnBallShader" "float diffuseGain" [0.899999976] "color diffuseColor" [1 0.949999988 0.899999976] "float diffuseRoughness" [0.5]
+AttributeBegin 
+Pattern "PxrFractal" "hairColorNoise" "int layers" [3] "float frequency" [100] "float gain" [0.5] "float lacunarity" [2] "int octaveCount" [4] "color colorScale" [0.0599999987 0.0399999991 0.0299999993] "color colorOffset" [1 0.899999976 0.800000012]
+Bxdf "PxrMarschnerHair" "yarnHairShader" "float diffuseGain" [0.5] "color diffuseColor" [1 0.899999976 0.800000012] "reference color specularColorR" ["hairColorNoise:resultRGB"] "color specularColorTRT" [1 0.899999976 0.75] "color specularColorTT" [1 0.850000024 0.699999988] "float specularGainR" [0.100000001] "float specularGainTRT" [0.400000006] 
+"float specularGainTT" [0.5]
+AttributeEnd 
+AttributeEnd 
+TransformBegin 
+Scale 0.0405099988 0.0405099988 0.0405099988
+Rotate 90 1 0 0
+AttributeBegin 
+Bxdf "PxrSurface" "yarnShader" "color diffuseColor" [1 0.949999988 0.899999976]
+AttributeEnd 
+TransformEnd 
+TransformBegin 
+Scale 0.0405099988 0.0405099988 0.0405099988
+Rotate 90 1 0 0
+Scale 1.5 1.5 1.5
+Translate -10.5 0 0
+Translate 0 0 8
+AttributeBegin 
+Attribute "displacementbound" "float sphere" [0.400000006]
+Attribute "dice" "float micropolygonlength" [0.100000001]
+Pattern "disp" "disp" "float scale1" [0.127000004] "float repeatU1" [100] "float repeatV1" [3] "float scale2" [0.00499999989] "float repeatU2" [150] "float repeatV2" [-37] "float noiseAmount1" [0.0350000001] "float noiseFreq1" [0.300000012] "float noiseAmount2" [0.0399999991] "float noiseFreq2" [2] "float noiseAmount3" [0] "float noiseFreq3" [80]
+Displace "PxrDisplace" "pxrdisp" "reference float dispScalar" ["disp:resultF"]
+Pattern "spiralColour" "spiralColour" "float repeatU" [900] "float repeatV" [-250] "color colorB" [0.899999976 0.850000024 0.800000012] "color colorA" [1 0.949999988 0.899999976]
+Bxdf "PxrSurface" "yarnShader" "float diffuseGain" [0.899999976] "reference color diffuseColor" ["spiralColour:resultRGB"] "float diffuseRoughness" [0.600000024] "float fuzzGain" [0.800000012] "color fuzzColor" [1 0.949999988 0.850000024] "float specularRoughness" [0.649999976] "color specularFaceColor" [0.300000012 0.280000001 0.25] "color specularEdgeColor" [0.5 0.449999988 0.400000006]
+Torus 13.2510004 0.312510014 0 360 200 
+AttributeEnd 
+TransformEnd 
+TransformEnd 
+WorldEnd 

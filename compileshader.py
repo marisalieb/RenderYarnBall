@@ -29,4 +29,13 @@ shadername4 = "disp"
 checkAndCompileShader(shadername4)
 
 shadername5 = "spiralColour"
-checkAndCompileShader(shadername5) bigger maybe slightly
+checkAndCompileShader(shadername5) # bigger maybe slightly
+
+shadername6 = "disp_wobbly"
+checkAndCompileShader(shadername6)
+
+shadername7 = "wood"
+checkAndCompileShader(shadername7)
+
+shadername8 = "spiralSpec"
+checkAndCompileShader(shadername8) # bigger maybe slightly
