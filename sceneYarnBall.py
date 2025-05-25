@@ -16,44 +16,47 @@ import numpy as np
 def sample_torus(major_radius=1.0, minor_radius=0.3, count=500):
     pts, norms = [], []
     for _ in range(count):
-        u = random.uniform(0, 2 * math.pi)
-        v = random.uniform(0, 2 * math.pi)
+        u = random.uniform(0, 2 * math.pi) # Angle around the major radius, as a full circle in radians is 2pi
+        v = random.uniform(0, 2 * math.pi) # Angle around the minor radius
 
+		# parametric equation for torus
         x = (major_radius + minor_radius * math.cos(v)) * math.cos(u)
         y = (major_radius + minor_radius * math.cos(v)) * math.sin(u)
         z = minor_radius * math.sin(v)
 
-        # Surface normal at point
+        # outward pointing surface normals at the sampled point
         nx = math.cos(u) * math.cos(v)
         ny = math.sin(u) * math.cos(v)
         nz = math.sin(v)
 
         pts.append((x, y, z))
         norms.append((nx, ny, nz))
+	
+	# return 3d coords on the torus and their normals
     return pts, norms
 
-def sample_sphere(radius=1.0, count=500):
-    pts, norms = [], []
-    for _ in range(count):
-        # Uniform sampling using spherical coordinates
-        theta = random.uniform(0, 2 * math.pi)     # Longitude
-        phi = math.acos(random.uniform(-1, 1))     # Latitude (uniform on sphere)
+# def sample_sphere(radius=1.0, count=500):
+#     pts, norms = [], []
+#     for _ in range(count):
+#         # Uniform sampling using spherical coordinates
+#         theta = random.uniform(0, 2 * math.pi)     # Longitude
+#         phi = math.acos(random.uniform(-1, 1))     # Latitude (uniform on sphere)
 
-        # Convert spherical to Cartesian coordinates
-        x = radius * math.sin(phi) * math.cos(theta)
-        y = radius * math.sin(phi) * math.sin(theta)
-        z = radius * math.cos(phi)
+#         # Convert spherical to Cartesian coordinates
+#         x = radius * math.sin(phi) * math.cos(theta)
+#         y = radius * math.sin(phi) * math.sin(theta)
+#         z = radius * math.cos(phi)
 
-        # For a sphere, normal is just the normalized position vector
-        nx, ny, nz = x / radius, y / radius, z / radius
+#         # For a sphere, normal is just the normalized position vector
+#         nx, ny, nz = x / radius, y / radius, z / radius
 
-        pts.append((x, y, z))
-        norms.append((nx, ny, nz))
+#         pts.append((x, y, z))
+#         norms.append((nx, ny, nz))
 
-    return pts, norms
+#     return pts, norms
 
 
-def generateHair(pts, widths, npts, count=900, major_radius=1.0, minor_radius=0.3, hair_length=0.02, hair_width=0.001):
+def generate_hair(pts, widths, npts, count=900, major_radius=1.0, minor_radius=0.3, hair_length=0.02, hair_width=0.001):
     #surface_pts, surface_norms = sample_torus(1.0, 0.01118, count)
     surface_pts, surface_norms = sample_torus(major_radius, minor_radius, count)
     for (x, y, z), (nx, ny, nz) in zip(surface_pts, surface_norms):
@@ -104,54 +107,54 @@ def generateHair(pts, widths, npts, count=900, major_radius=1.0, minor_radius=0.
         npts.append(num_control_points)  # Append the updated number of control points for each hair strand
         widths.append(hair_width)  # 0.001 beofre but maybe too thick; Width of the hair strand (adjust as needed for fuzziness)
 
-def generateHairSphere(pts, widths, npts, count=900, radius = .5, hair_length=0.02, hair_width=0.001):
-    #surface_pts, surface_norms = sample_torus(1.0, 0.01118, count)
-    surface_pts_s, surface_norms_s = sample_sphere(radius, count)
-    for (x, y, z), (nx, ny, nz) in zip(surface_pts_s, surface_norms_s):
-        # --- CURLY VARIATION USING MULTI-AXIS SINUSOIDAL FUNCTIONS ---
-        jitter = 1.5  # Randomness to introduce slight variation in curl direction
-        curl_strength = random.uniform(1.5, 3.0)  # Control how tightly the hair curls
+# def generate_hairSphere(pts, widths, npts, count=900, radius = .5, hair_length=0.02, hair_width=0.001):
+#     #surface_pts, surface_norms = sample_torus(1.0, 0.01118, count)
+#     surface_pts_s, surface_norms_s = sample_sphere(radius, count)
+#     for (x, y, z), (nx, ny, nz) in zip(surface_pts_s, surface_norms_s):
+#         # --- CURLY VARIATION USING MULTI-AXIS SINUSOIDAL FUNCTIONS ---
+#         jitter = 1.5  # Randomness to introduce slight variation in curl direction
+#         curl_strength = random.uniform(1.5, 3.0)  # Control how tightly the hair curls
         
-        # Increased curl factor for tighter curls
-        curl_factor = random.uniform(15.0, 30.0)  # Higher frequency for tight, 4C curls
-        angle_offset = random.uniform(0, math.pi)  # Offset for randomizing the start of curls
+#         # Increased curl factor for tighter curls
+#         curl_factor = random.uniform(15.0, 30.0)  # Higher frequency for tight, 4C curls
+#         angle_offset = random.uniform(0, math.pi)  # Offset for randomizing the start of curls
 
-        # More control points for smoother and tighter curls
-        num_control_points = 10  # Increased control points for smoother, tighter curls
-        variation = random.uniform(0.5, 1.5)  # Vary hair length ±50%
-        strand_length = hair_length * variation
-        for i in range(num_control_points):  # Iterate through control points
-            t = i / (num_control_points - 1)  # Parametric range for the hair strand
+#         # More control points for smoother and tighter curls
+#         num_control_points = 10  # Increased control points for smoother, tighter curls
+#         variation = random.uniform(0.5, 1.5)  # Vary hair length ±50%
+#         strand_length = hair_length * variation
+#         for i in range(num_control_points):  # Iterate through control points
+#             t = i / (num_control_points - 1)  # Parametric range for the hair strand
             
-            # Create multi-axis curls, one along X, one along Y, one along Z
-            curl_x = math.sin(curl_factor * t + angle_offset) * 0.6  # Larger curls in X
-            curl_y = math.cos(curl_factor * t + angle_offset) * 0.6  # Larger curls in Y
-            curl_z = math.sin(curl_factor * t + angle_offset) * 0.2  # Smaller curls in Z
+#             # Create multi-axis curls, one along X, one along Y, one along Z
+#             curl_x = math.sin(curl_factor * t + angle_offset) * 0.6  # Larger curls in X
+#             curl_y = math.cos(curl_factor * t + angle_offset) * 0.6  # Larger curls in Y
+#             curl_z = math.sin(curl_factor * t + angle_offset) * 0.2  # Smaller curls in Z
             
-            # Add a vertical offset for extra randomness (simulating coiled curls)
-            vertical_curl = math.cos(curl_factor * t * 2) * 0.2  # Vertical curl, gives it a coiled effect
-            curl_x += vertical_curl
-            curl_y += vertical_curl
+#             # Add a vertical offset for extra randomness (simulating coiled curls)
+#             vertical_curl = math.cos(curl_factor * t * 2) * 0.2  # Vertical curl, gives it a coiled effect
+#             curl_x += vertical_curl
+#             curl_y += vertical_curl
 
-            # Combine with jitter and original direction for natural randomness
-            nx += random.uniform(-jitter, jitter) + curl_x
-            ny += random.uniform(-jitter, jitter) + curl_y
-            nz += random.uniform(-jitter, jitter) + curl_z
+#             # Combine with jitter and original direction for natural randomness
+#             nx += random.uniform(-jitter, jitter) + curl_x
+#             ny += random.uniform(-jitter, jitter) + curl_y
+#             nz += random.uniform(-jitter, jitter) + curl_z
 
-            # Normalize the new direction vector
-            length = math.sqrt(nx * nx + ny * ny + nz * nz)
-            nx /= length
-            ny /= length
-            nz /= length
+#             # Normalize the new direction vector
+#             length = math.sqrt(nx * nx + ny * ny + nz * nz)
+#             nx /= length
+#             ny /= length
+#             nz /= length
 
-            # Generate control points along the curly direction (longer hair strands)
-            px = x + nx * strand_length * t  # Increase to make hairs longer 0.012
-            py = y + ny * strand_length * t
-            pz = z + nz * strand_length * t
-            pts.extend([px, py, pz])
+#             # Generate control points along the curly direction (longer hair strands)
+#             px = x + nx * strand_length * t  # Increase to make hairs longer 0.012
+#             py = y + ny * strand_length * t
+#             pz = z + nz * strand_length * t
+#             pts.extend([px, py, pz])
         
-        npts.append(num_control_points)  # Append the updated number of control points for each hair strand
-        widths.append(hair_width)  # 0.001 beofre but maybe too thick; Width of the hair strand (adjust as needed for fuzziness)
+#         npts.append(num_control_points)  # Append the updated number of control points for each hair strand
+#         widths.append(hair_width)  # 0.001 beofre but maybe too thick; Width of the hair strand (adjust as needed for fuzziness)
 
 
 
@@ -285,7 +288,7 @@ def main(
     
     ri.Hider("raytrace", {
     "int incremental": [1],
-    "int maxsamples": [256]
+    "int maxsamples": [512]
         })
 
     # PixelFilter: "gaussian" 2 2
@@ -350,8 +353,9 @@ def main(
     # ri.Rotate(0, 0, 1, 0)         # Camera rotation; value, x, y, z
     #ri.Rotate(12, 0, 0, 1)          # Camera rotation; value, x, y, z
     ri.Translate(0.065, .945328750, 1.075)      # Camera position (focusDistance should match if you want to focus here)
-    ri.DepthOfField(8, .0250, .1125925)  # aktuell
+    ri.DepthOfField(32, .0250, .1125925)  # aktuell
     
+
     
     
     # 1.4 0.05 6.8     1.4 0.1 7
@@ -538,57 +542,57 @@ def main(
     # ri.Translate(0.1, 0.65, -1.35) # ADD this for close up!!!
 
 
-    # SPHERE
-    ri.AttributeBegin()
-    ri.Bxdf("PxrSurface", "yarnBallShader",
-    {
-        "float diffuseGain" : [0.9],  # Bring back warmth
-        "color diffuseColor" : [1.0, 0.95, 0.9],  # Slightly warmer diffuse
-        "float diffuseRoughness" : [0.5],
+    # # SPHERE
+    # ri.AttributeBegin()
+    # ri.Bxdf("PxrSurface", "yarnBallShader",
+    # {
+    #     "float diffuseGain" : [0.9],  # Bring back warmth
+    #     "color diffuseColor" : [1.0, 0.95, 0.9],  # Slightly warmer diffuse
+    #     "float diffuseRoughness" : [0.5],
 
 
 
-    })
-    # ri.Scale(0.25, 0.25, 0.25)  # Scale down the sphere
-    # ri.Sphere(.515, -.515, .515, 360.0)  # Sphere at the center .4975
+    # })
+    # # ri.Scale(0.25, 0.25, 0.25)  # Scale down the sphere
+    # # ri.Sphere(.515, -.515, .515, 360.0)  # Sphere at the center .4975
     
-    #radius = .515
-    #surface_pts_s, surface_norms_s = sample_sphere(radius, count)
-    #hair_pts_s, hair_widths_s, hair_npts_s = [], [], []
-    #generateHairSphere(hair_pts_s, hair_widths_s, hair_npts_s, count=40000, radius=.515, hair_length=0.02, hair_width=0.0004)
+    # #radius = .515
+    # #surface_pts_s, surface_norms_s = sample_sphere(radius, count)
+    # #hair_pts_s, hair_widths_s, hair_npts_s = [], [], []
+    # #generate_hairSphere(hair_pts_s, hair_widths_s, hair_npts_s, count=40000, radius=.515, hair_length=0.02, hair_width=0.0004)
 
-    ri.AttributeBegin()
+    # ri.AttributeBegin()
 
-    ri.Pattern("PxrFractal", "hairColorNoise", {
-        "int layers": [3],
-        "float frequency": [100.0],
-        "float gain": [0.5],
-        "float lacunarity": [2.0],
-        "int octaveCount": [4],
-        "color colorScale": [0.06, 0.04, 0.03],
-        "color colorOffset": [1.0, 0.9, 0.8]
-    })
-
-    ri.Bxdf('PxrMarschnerHair', 'yarnHairShader', {
-        'float diffuseGain': [0.5],
-        'color diffuseColor': [1.0, 0.9, 0.8],
-
-        'reference color specularColorR': ['hairColorNoise:resultRGB'],
-        'color specularColorTRT': [1.0, 0.9, 0.75],
-        'color specularColorTT': [1.0, 0.85, 0.7],
-
-        'float specularGainR': [0.1],
-        'float specularGainTRT': [0.4],
-        'float specularGainTT': [0.5],
-    })
-
-    # ri.Curves("cubic", hair_npts_s, "nonperiodic", {
-    #     ri.P: hair_pts_s,
-    #     "float width": hair_widths_s
+    # ri.Pattern("PxrFractal", "hairColorNoise", {
+    #     "int layers": [3],
+    #     "float frequency": [100.0],
+    #     "float gain": [0.5],
+    #     "float lacunarity": [2.0],
+    #     "int octaveCount": [4],
+    #     "color colorScale": [0.06, 0.04, 0.03],
+    #     "color colorOffset": [1.0, 0.9, 0.8]
     # })
 
-    ri.AttributeEnd()
-    ri.AttributeEnd()
+    # ri.Bxdf('PxrMarschnerHair', 'yarnHairShader', {
+    #     'float diffuseGain': [0.5],
+    #     'color diffuseColor': [1.0, 0.9, 0.8],
+
+    #     'reference color specularColorR': ['hairColorNoise:resultRGB'],
+    #     'color specularColorTRT': [1.0, 0.9, 0.75],
+    #     'color specularColorTT': [1.0, 0.85, 0.7],
+
+    #     'float specularGainR': [0.1],
+    #     'float specularGainTRT': [0.4],
+    #     'float specularGainTT': [0.5],
+    # })
+
+    # # ri.Curves("cubic", hair_npts_s, "nonperiodic", {
+    # #     ri.P: hair_pts_s,
+    # #     "float width": hair_widths_s
+    # # })
+
+    # ri.AttributeEnd()
+    # ri.AttributeEnd()
 
     
     random.seed(3)  # makes your randomness repeatable across runs
@@ -747,7 +751,7 @@ def main(
 
     ri.Translate(0, -.495, 0)  # Slightly adjust position to avoid z-fighting
 
-    num_tori3 = 214 #214  # 213 #50 
+    num_tori3 = 214 # 214 #214  # 213 #50 
     rmaj_values = np.linspace(.8, 1.1, num_tori3)
     # print("rmaj_values", rmaj_values)
 
@@ -789,10 +793,32 @@ def main(
 
 
 
+        # ri.Pattern(
+        #     "disp", "disp",
+        #     {
+        #         "float scale1": [.006],  # Larger displacement for the first spiral
+        #         "float repeatU1": [230],  # Repeat factor for the first spiral
+        #         "float repeatV1": [10.0],  # Repeat factor for the first spiral
+
+        #         "float scale2": [0.0],  # 0.04
+        #         "float repeatU2": [150],  # 
+        #         "float repeatV2": [-37],  # -7 
+
+        #         "float noiseAmount1": [0.000035],   # Larger bumps noise strength
+        #         "float noiseFreq1": [.3],     # Larger bumps frequency
+
+        #         "float noiseAmount2": [0.004],   # 0.02, can make it bigger maybe slightly
+        #         "float noiseFreq2": [10.0],
+
+        #         "float noiseAmount3": [0.00],   # maybe 0.005 or 0.002 but maybe more just slight stripes not bumps
+        #         "float noiseFreq3": [80.0]      # the smallest bumps on it
+        #     }
+        # )
+
         ri.Pattern(
             "disp", "disp",
             {
-                "float scale1": [.006],  # Larger displacement for the first spiral
+                "float scale1": [.003],  # Larger displacement for the first spiral
                 "float repeatU1": [230],  # Repeat factor for the first spiral
                 "float repeatV1": [10.0],  # Repeat factor for the first spiral
 
@@ -800,11 +826,11 @@ def main(
                 "float repeatU2": [150],  # 
                 "float repeatV2": [-37],  # -7 
 
-                "float noiseAmount1": [0.000035],   # Larger bumps noise strength
-                "float noiseFreq1": [.3],     # Larger bumps frequency
+                "float noiseAmount1": [0.0015],   # Larger bumps noise strength
+                "float noiseFreq1": [.750],     # Larger bumps frequency
 
-                "float noiseAmount2": [0.004],   # 0.02, can make it bigger maybe slightly
-                "float noiseFreq2": [10.0],
+                "float noiseAmount2": [0.0032],   # 0.02, can make it bigger maybe slightly
+                "float noiseFreq2": [14.0]  ,    # between 4 and 5 
 
                 "float noiseAmount3": [0.00],   # maybe 0.005 or 0.002 but maybe more just slight stripes not bumps
                 "float noiseFreq3": [80.0]      # the smallest bumps on it
@@ -906,7 +932,7 @@ def main(
         # ri.TransformEnd()
 
 
-
+        # DISPLACED TORUS 
         Rmaj3 = random.uniform(.998, 1.2)
         #Rmaj2 = float(rmaj_values[i])
         #ri.Torus(.325, 0.05, 0.0, 360.0, 360.0)
@@ -925,13 +951,13 @@ def main(
         effective_major = Rmaj3 * 0.40510 *.125 # 13.251 * 0.040510
         effective_minor = 0.024181251 * 0.40510 * .125
         hairlength = 0.0075 *hair_scale
-        hairwidth = 0.000215 * hair_scale *2
+        hairwidth = 0.000215 * hair_scale
 
 
         hair_pts, hair_widths, hair_npts = [], [], []
 
         # # !!!!
-        generateHair(hair_pts, hair_widths, hair_npts, count=2000, major_radius=effective_major, minor_radius=effective_minor, hair_length=hairlength, hair_width=hairwidth)
+        generate_hair(hair_pts, hair_widths, hair_npts, count=3000, major_radius=effective_major, minor_radius=effective_minor, hair_length=hairlength, hair_width=hairwidth)
 
         ri.AttributeBegin()
 
@@ -963,7 +989,7 @@ def main(
         })
 
 
-
+        # based on the lecture example on hair, these parameters are the minimum needed in the rib
         ri.Curves("cubic", hair_npts, "nonperiodic", {
             ri.P: hair_pts,
             "float width": hair_widths
@@ -1078,7 +1104,7 @@ def main(
         ri.AttributeBegin()
 
 
-        ri.Attribute("displacementbound", {"float sphere": [0.4]}) # .2
+        ri.Attribute("displacementbound", {"float sphere": [0.04]}) # .2
         ri.Attribute("dice", {
             "float micropolygonlength": [0.1]
         })
@@ -1111,7 +1137,7 @@ def main(
         ri.Pattern(
             "disp", "disp",
             {
-                "float scale1": [.006],  # Larger displacement for the first spiral
+                "float scale1": [.003],  # Larger displacement for the first spiral
                 "float repeatU1": [230],  # Repeat factor for the first spiral
                 "float repeatV1": [10.0],  # Repeat factor for the first spiral
 
@@ -1119,11 +1145,11 @@ def main(
                 "float repeatU2": [150],  # 
                 "float repeatV2": [-37],  # -7 
 
-                "float noiseAmount1": [0.000035],   # Larger bumps noise strength
-                "float noiseFreq1": [.3],     # Larger bumps frequency
+                "float noiseAmount1": [0.0015],   # Larger bumps noise strength
+                "float noiseFreq1": [.750],     # Larger bumps frequency
 
-                "float noiseAmount2": [0.004],   # 0.02, can make it bigger maybe slightly
-                "float noiseFreq2": [10.0]  ,    # between 4 and 5 
+                "float noiseAmount2": [0.0032],   # 0.02, can make it bigger maybe slightly
+                "float noiseFreq2": [14.0]  ,    # between 4 and 5 
 
                 "float noiseAmount3": [0.00],   # maybe 0.005 or 0.002 but maybe more just slight stripes not bumps
                 "float noiseFreq3": [80.0]      # the smallest bumps on it
@@ -1225,7 +1251,7 @@ def main(
         # ri.TransformEnd()
 
 
-
+        # DISPLACED TORUS
         Rmaj2 = random.uniform(1.2, 1.3)
         #Rmaj2 = float(rmaj_values[i])
         #ri.Torus(.325, 0.05, 0.0, 360.0, 360.0)
@@ -1234,19 +1260,8 @@ def main(
         ri.Torus(Rmaj2, 0.024181251, 0, 360, 360)
         #wobbly_torus_uvs(ri)
 
-        # # 4) scale your torus so its “1.0” major circle becomes Rmaj
-        # ri.Scale(Rmaj, Rmaj, Rmaj)
-        # # 5) draw a unit torus with tube radius = tube_r / Rmaj
-        # ri.Torus(1.0, tube_r/Rmaj, 0, 360, 360)
-
         # ri.TransformEnd()
         ri.AttributeEnd()
-
-
-
-
-
-
 
 
 
@@ -1260,13 +1275,13 @@ def main(
         effective_major = Rmaj2 * 0.40510 *.125 # 13.251 * 0.040510
         effective_minor = 0.024181251 * 0.40510 * .125
         hairlength = 0.0075 *hair_scale
-        hairwidth = 0.000215 * hair_scale *2
+        hairwidth = 0.000215 * hair_scale
 
 
         hair_pts, hair_widths, hair_npts = [], [], []
 
         # # !!!!
-        generateHair(hair_pts, hair_widths, hair_npts, count=2000, major_radius=effective_major, minor_radius=effective_minor, hair_length=hairlength, hair_width=hairwidth)
+        generate_hair(hair_pts, hair_widths, hair_npts, count=4000, major_radius=effective_major, minor_radius=effective_minor, hair_length=hairlength, hair_width=hairwidth)
 
         ri.AttributeBegin()
 
@@ -1310,6 +1325,8 @@ def main(
 
 
     ri.TransformBegin()
+
+
     # ri.Scale(.040510, .040510, .040510)
     # ri.Rotate(90, 1, 0, 0)
     # ri.AttributeBegin()
@@ -1445,13 +1462,13 @@ if __name__ == "__main__":
         "-s",
         nargs="?",
         const=10.0,
-        default=10.0,
+        default=2.0,
         type=float,
         help="modify the shading rate default to 10",
     )
 
     parser.add_argument(
-        "--pixelvar", "-p", nargs="?", const=0.01, default=0.1, type=float, help="modify the pixel variance default  0.1"
+        "--pixelvar", "-p", nargs="?", const=0.01, default=0.01, type=float, help="modify the pixel variance default  0.1"
     )
     parser.add_argument(
         "--fov", "-f", nargs="?", const=48.0, default=48.0, type=float, help="projection fov default 48.0"
