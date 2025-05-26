@@ -211,3 +211,50 @@ for loop:
         ri.TransformEnd()
         ri.TransformEnd()
 
+
+
+
+
+
+
+def generateHair(pts, widths, npts, count=900, major_radius=1.0, 
+			minor_radius=0.3, hair_length=0.02, hair_width=0.001):
+    
+	# get hair root positions and normals from the torus
+	surface_pts, surface_norms = sample_torus(major_radius, minor_radius, count)
+
+	# loop over each hair root
+    for (x, y, z), (nx, ny, nz) in zip(surface_pts, surface_norms):
+
+        jitter = 0.001 #1.5 # used for curliness, 0 is zigzaggy, higher value is slightly less
+
+        # More control points for smoother and tighter curls
+        num_control_points = 10
+
+		# variate length of the hairs
+        variation = random.uniform(0.5, 2.5)
+        strand_length = hair_length * variation
+
+        for i in range(num_control_points):
+
+            t = i / (num_control_points - 1) # range of the points in the hair strand, 0/9, 1/9 etc, so from 0 to 1 in total
+
+            # Combine with jitter and original direction for natural randomness
+            nx += random.uniform(-jitter, jitter)
+            ny += random.uniform(-jitter, jitter) 
+            nz += random.uniform(-jitter, jitter)
+
+            # # Normalize, makes it a better length
+            # length = math.sqrt(nx * nx + ny * ny + nz * nz)
+            # nx /= length
+            # ny /= length
+            # nz /= length
+
+			# move each point in the strand along the surface normal, incrementally
+            px = x + nx * strand_length * t 
+            py = y + ny * strand_length * t
+            pz = z + nz * strand_length * t
+            pts.extend([px, py, pz]) 
+        
+        npts.append(num_control_points) 
+        widths.append(hair_width) 

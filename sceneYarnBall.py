@@ -281,18 +281,18 @@ def main(
     ri.Display("scene.exr", "it", "rgba")
     ri.Format(width, height, 1)
 
-    # setup the raytrace / integrators
-    ri.Hider("raytrace", {"int incremental": [1]})
-    ri.ShadingRate(shadingrate)
-    ri.PixelVariance(pixelvar)
+    # # setup the raytrace / integrators
+    # ri.Hider("raytrace", {"int incremental": [1]})
+    # ri.ShadingRate(shadingrate)
+    # ri.PixelVariance(pixelvar)
     
-    ri.Hider("raytrace", {
-    "int incremental": [1],
-    "int maxsamples": [512]
-        })
+    # ri.Hider("raytrace", {
+    # "int incremental": [1],
+    # "int maxsamples": [1024]
+    #     })
 
-    # PixelFilter: "gaussian" 2 2
-    ri.PixelFilter("gaussian", 2, 2) 
+    # # PixelFilter: "gaussian" 2 2
+    # ri.PixelFilter("gaussian", 2, 2) 
 
     ri.Integrator(integrator, "integrator", integratorParams)
     ri.Option("statistics", {"filename": ["stats.txt"]})
@@ -352,10 +352,19 @@ def main(
     ri.Rotate(-5, 1, 0, 0)          # Camera rotation; value, x, y, z; -5
     # ri.Rotate(0, 0, 1, 0)         # Camera rotation; value, x, y, z
     #ri.Rotate(12, 0, 0, 1)          # Camera rotation; value, x, y, z
-    ri.Translate(0.065, .945328750, 1.075)      # Camera position (focusDistance should match if you want to focus here)
+    ri.Translate(0.07065, .945328750, 1.075)      # Camera position (focusDistance should match if you want to focus here)
     ri.DepthOfField(32, .0250, .1125925)  # aktuell
     
+    # # # IMAGE TWWWWOOO NEW SIZE!!!!
+    # ri.Rotate(-5, 1, 0, 0)
+    # ri.Rotate(50, 0, 1, 0) 
+    # #ri.Rotate(12, 0, 0, 1) 
+    # ri.Translate(0.07065, .945328750, 1.075)      # Camera position (focusDistance should match if you want to focus here)
+    # #ri.DepthOfField(32, .0250, .1125925)  # aktuell
+    
 
+    
+    
     
     
     # 1.4 0.05 6.8     1.4 0.1 7
@@ -418,39 +427,11 @@ def main(
     ri.Translate(0, 0, -.5)
     ri.Rotate(90, 0, 1, 0)
     ri.Scale(1, 1, 1.5)
-    ri.Translate(0, 0, .315)
+    # ri.Translate(0, 0, .315)
+    ri.Translate(1.2975, 0, 0)
 
     ri.AttributeBegin()
     ri.Attribute("identifier", {"name": "floor"})
-
-
-
-
-
-    # #ri.Attribute("displacementbound", {"float sphere": [0.2]}) # .2
-    # ri.Attribute("displacementbound", {
-    # "float sphere": [0.3],
-    # "string coordinatesystem": "object"
-    #     })
-
-
-    # ri.Attribute("dice", {
-    #     "float micropolygonlength": [0.5]
-    # })
-
-
-
-    # # Load displacement texture (height map)
-    # ri.Pattern("PxrTexture", "floorDisplacementTex", {
-    #     "string filename": "wood_table_001_disp_1k.tex",
-    #   #  "int linearize": [1]  # Optional, linearize height maps if needed
-    # })
-
-    # # Displacement pattern using the texture
-    # ri.Displace("PxrDisplace", "floorDisplacement", {
-    #     "reference float dispScalar": ["floorDisplacementTex:resultR"],
-    #     "float dispAmount": [.01],  # Adjust depth of displacement
-    # })
 
 
     # Load roughness map
@@ -483,29 +464,6 @@ def main(
 
 
 
-
-
-    
-    # ri.Pattern("wood", "woodTx", {})
-
-    # # Use texture as diffuse color
-    # ri.Bxdf("PxrDisney", "floorShader", {
-    #     "reference color baseColor": ["woodTx:Cout"],
-    #     # "reference float roughness": ["floorRoughness:resultR"],
-
-    #     # # Optional parameters for more realism
-    #     # "float metallic": [0.0],  # Non-metallic surface
-    #     # "float specular": [0.5],  # Adjust specular reflection
-    #     # "float anisotropic": [0.0]  # No anisotropy
-    # })
-
-    # ri.Displace("PxrDisplace", "floorDisplacement", {
-    #     "reference float dispScalar": ["woodTx:Bout"],
-    #     "float dispAmount": [.02],  # Adjust depth of displacement
-    # })
-
-
-
     # Apply geometry with UV coordinates
     scale = 1  # scale factor for x and z
 
@@ -535,223 +493,21 @@ def main(
     # ri.TransformBegin()
     ri.Translate(-0.13, -.87, -1.318)
 
-
-
-    #ri.Scale(1.5, 1.5, 1.5)
+    # ri.Translate(0, -.495, 0)  # Slightly adjust position to avoid z-fighting
 
     # ri.Translate(0.1, 0.65, -1.35) # ADD this for close up!!!
 
 
-    # # SPHERE
-    # ri.AttributeBegin()
-    # ri.Bxdf("PxrSurface", "yarnBallShader",
-    # {
-    #     "float diffuseGain" : [0.9],  # Bring back warmth
-    #     "color diffuseColor" : [1.0, 0.95, 0.9],  # Slightly warmer diffuse
-    #     "float diffuseRoughness" : [0.5],
 
 
 
-    # })
-    # # ri.Scale(0.25, 0.25, 0.25)  # Scale down the sphere
-    # # ri.Sphere(.515, -.515, .515, 360.0)  # Sphere at the center .4975
-    
-    # #radius = .515
-    # #surface_pts_s, surface_norms_s = sample_sphere(radius, count)
-    # #hair_pts_s, hair_widths_s, hair_npts_s = [], [], []
-    # #generate_hairSphere(hair_pts_s, hair_widths_s, hair_npts_s, count=40000, radius=.515, hair_length=0.02, hair_width=0.0004)
-
-    # ri.AttributeBegin()
-
-    # ri.Pattern("PxrFractal", "hairColorNoise", {
-    #     "int layers": [3],
-    #     "float frequency": [100.0],
-    #     "float gain": [0.5],
-    #     "float lacunarity": [2.0],
-    #     "int octaveCount": [4],
-    #     "color colorScale": [0.06, 0.04, 0.03],
-    #     "color colorOffset": [1.0, 0.9, 0.8]
-    # })
-
-    # ri.Bxdf('PxrMarschnerHair', 'yarnHairShader', {
-    #     'float diffuseGain': [0.5],
-    #     'color diffuseColor': [1.0, 0.9, 0.8],
-
-    #     'reference color specularColorR': ['hairColorNoise:resultRGB'],
-    #     'color specularColorTRT': [1.0, 0.9, 0.75],
-    #     'color specularColorTT': [1.0, 0.85, 0.7],
-
-    #     'float specularGainR': [0.1],
-    #     'float specularGainTRT': [0.4],
-    #     'float specularGainTT': [0.5],
-    # })
-
-    # # ri.Curves("cubic", hair_npts_s, "nonperiodic", {
-    # #     ri.P: hair_pts_s,
-    # #     "float width": hair_widths_s
-    # # })
-
-    # ri.AttributeEnd()
-    # ri.AttributeEnd()
-
-    
     random.seed(3)  # makes your randomness repeatable across runs
 
-    # # Torus loops
-    # num_tori = 0 # 150
-    # # R_min, R_max = 10.0, 13.0   # your desired outer‐radius range
-    # # tube_r       = 0.5          # fixed tube radius (adjust as needed)
-
-    # for i in range(num_tori):
-    #     rx = math.sin(i * 1.1) * 180
-    #     ry = math.cos(i * 0.7) * 180
-    #     rz = math.sin(i * 0.3) * 180
-
-    #     tx = math.sin(i * 0.69) * 0.015
-    #     ty = math.cos(i * 0.6) * 0.015
-    #     tz = math.sin(i * 0.64) * 0.015
 
 
-    #     ri.TransformBegin()
-    #     ri.AttributeBegin()
-    #     ri.TransformBegin()
+    ri.Translate(0, -.4925, 0)  # Slightly adjust position to avoid z-fighting
 
-    #     ri.Translate(tx, ty, tz)
-    #     ri.Rotate(rx, 1, 0, 0)
-    #     ri.Rotate(ry, 0, 1, 0)
-    #     ri.Rotate(rz, 0, 0, 1)
-
-
-
-    #     ri.Attribute("displacementbound", {"float sphere": [0.4]}) # .2
-    #     ri.Attribute("dice", {
-    #         "float micropolygonlength": [0.1]
-    #     })
-
-    #     # ri.Scale(.040510, .040510, .040510)
-    #     # ri.Torus(13.251, 0.24181251, 0, 360, 360)
-
-    #     # ri.Pattern(
-    #     #     "disp", "disp",
-    #     #     {
-    #     #         "float scale1": [.1],  # Larger displacement for the first spiral
-    #     #         "float repeatU1": [130],  # Repeat factor for the first spiral
-    #     #         "float repeatV1": [3.0],  # Repeat factor for the first spiral
-
-    #     #         "float scale2": [0.02],  # 0.04
-    #     #         "float repeatU2": [150],  # 
-    #     #         "float repeatV2": [-37],  # -7 
-
-    #     #         "float noiseAmount1": [0.035],   # Larger bumps noise strength
-    #     #         "float noiseFreq1": [.3],     # Larger bumps frequency
-
-    #     #         "float noiseAmount2": [0.04],   # 0.02, can make it bigger maybe slightly
-    #     #         "float noiseFreq2": [2.0]  ,    # between 4 and 5 
-
-    #     #         "float noiseAmount3": [0.00],   # maybe 0.005 or 0.002 but maybe more just slight stripes not bumps
-    #     #         "float noiseFreq3": [80.0]      # the smallest bumps on it
-    #     #     }
-    #     # )
-
-    #     ri.Pattern(
-    #         "disp", "disp",
-    #         {
-    #             "float scale1": [.06],  # Larger displacement for the first spiral
-    #             "float repeatU1": [230],  # Repeat factor for the first spiral
-    #             "float repeatV1": [10.0],  # Repeat factor for the first spiral
-
-    #             "float scale2": [0.0],  # 0.04
-    #             "float repeatU2": [150],  # 
-    #             "float repeatV2": [-37],  # -7 
-
-    #             "float noiseAmount1": [0.035],   # Larger bumps noise strength
-    #             "float noiseFreq1": [.3],     # Larger bumps frequency
-
-    #             "float noiseAmount2": [0.02],   # 0.02, can make it bigger maybe slightly
-    #             "float noiseFreq2": [2.0]  ,    # between 4 and 5 
-
-    #             "float noiseAmount3": [0.00],   # maybe 0.005 or 0.002 but maybe more just slight stripes not bumps
-    #             "float noiseFreq3": [80.0]      # the smallest bumps on it
-    #         }
-    #     )
-
-    #     # # Apply displacement shader
-    #     # ri.Displace(
-    #     #     "PxrDisplace", "pxrdisp",
-    #     #     {"reference float dispScalar": ["disp:resultF"]}
-    #     # )
-
-
-    #     # colour spiral pattern to simulate strands of fibres
-    #     ri.Pattern(
-    #         "spiralColour", "spiralColour",
-    #         {
-    #             #"float scale1": [.127],  # Larger displacement for the first spiral
-    #             "float repeatU": [900],  # Repeat factor for the first spiral
-    #             "float repeatV": [-250.0],  # Repeat factor for the first spiral
-    #             #"float blendSharpness" : [10],  # Blend sharpness for the color transition
-    #             "color colorB": [0.9, 0.85, 0.8],
-    #             "color colorA": [1, 0.095, 0.09],
-    #             #            "color colorA": [0.8, 0.7, 0.63],
-    #             # "color colorB": [.95, 0.88, 0.73],
-    #             # "color colorA": [0.65, 0.55, 0.4],
-    #             # "color colorB": [0.85, 0.75, 0.6],
-
-    #         }
-    #     )
-
-    #     ri.Bxdf("PxrSurface", "yarnShader",
-    #     {
-    #         "float diffuseGain" : [.50],  # Bring back warmth
-    #         #"reference color diffuseColor": ["spiralColour:resultRGB"],
-    #         "color diffuseColor" : [1.0, 0.075, 0.05],  # Slightly warmer diffuse
-    #         "float diffuseRoughness" : [0.6],  # Softer light scatter
-
-    #         "float fuzzGain" : [1.0],  # Increase fuzz for soft, warm look
-    #         "color fuzzColor" : [1.0, 0.05, 0.05],
-
-    #         # "float subsurfaceGain": [0.3],
-    #         # "color subsurfaceColor": [1.0, 0.05, 0.09],
-    #         # "float subsurfaceDmfp": [5.0],  # Increase for fluffier light spread
-            
-    #         # Subsurface scattering for fluffiness
-    #         "int subsurfaceType"        : [1],              # 1 = Standard SSS model
-    #         "float subsurfaceGain"      : [0.05],           # Tiny amount of SSS
-    #         "color subsurfaceColor"     : [1.0, 0.075, 0.02],# Match base color
-    #         "float subsurfaceDmfp"      : [1.0], 
-    #         # "float subsurfaceGain" : [0.2],
-    #         # "color subsurfaceColor" : [0.85, 0.75, 0.6],
-    #         # "float subsurfaceDmfp" : [5.0],  # Shorter scattering = less waxy
-
-
-    #         # Match highlight color to base — subtle red sheen
-    #         # "color specularFaceColor" : [0.2, 0.05, 0.02],
-    #         "color specularEdgeColor" : [0.25, 0.06, 0.025], # fresnel edge sheen
-    #         "float specularRoughness" : [0.6],               # Soft highlights
-    #         "int specularFresnelMode" : [0],   
-    #     })
-
-
-    #     Rmaj1 = random.uniform(8.0, 12.0)
-    #     #ri.Torus(.325, 0.05, 0.0, 360.0, 360.0)
-    #     ri.Scale(.040510, .040510, .040510)
-    #     ri.Torus(Rmaj1, 0.24181251, 0, 360, 360)
-    #     #wobbly_torus_uvs(ri)
-
-    #     # # 4) scale your torus so its “1.0” major circle becomes Rmaj
-    #     # ri.Scale(Rmaj, Rmaj, Rmaj)
-    #     # # 5) draw a unit torus with tube radius = tube_r / Rmaj
-    #     # ri.Torus(1.0, tube_r/Rmaj, 0, 360, 360)
-
-    #     ri.TransformEnd()  # End the torus transform
-    #     ri.AttributeEnd()
-
-
-
-
-    ri.Translate(0, -.495, 0)  # Slightly adjust position to avoid z-fighting
-
-    num_tori3 = 214 # 214 #214  # 213 #50 
+    num_tori3 = 200 # 214 #214  # 213 #50 
     rmaj_values = np.linspace(.8, 1.1, num_tori3)
     # print("rmaj_values", rmaj_values)
 
@@ -786,7 +542,7 @@ def main(
         ri.TransformBegin()
 
 
-        ri.Attribute("displacementbound", {"float sphere": [0.4]}) # .2
+        ri.Attribute("displacementbound", {"float sphere": [0.02]}) # .2
         ri.Attribute("dice", {
             "float micropolygonlength": [0.1]
         })
@@ -818,9 +574,9 @@ def main(
         ri.Pattern(
             "disp", "disp",
             {
-                "float scale1": [.003],  # Larger displacement for the first spiral
-                "float repeatU1": [230],  # Repeat factor for the first spiral
-                "float repeatV1": [10.0],  # Repeat factor for the first spiral
+                "float scale1": [.0043],  # Larger displacement for the first spiral
+                "float repeatU1": [170],  # Repeat factor for the first spiral, 230
+                "float repeatV1": [8],  # Repeat factor for the first spiral, 10
 
                 "float scale2": [0.0],  # 0.04
                 "float repeatU2": [150],  # 
@@ -938,7 +694,7 @@ def main(
         #ri.Torus(.325, 0.05, 0.0, 360.0, 360.0)
         ri.Scale(0.125, 0.125, 0.125)  # Scale down the sphere
         ri.Scale(.40510, .40510, .40510)
-        ri.Torus(Rmaj3, 0.024181251, 0, 360, 360)
+        ri.Torus(Rmaj3, 0.034181251, 0, 360, 360) #0.024181251
         ri.TransformEnd()  # End the torus transform
         ri.AttributeEnd()
 
@@ -949,9 +705,9 @@ def main(
         hair_scale = .125
         # Match the effective torus radii
         effective_major = Rmaj3 * 0.40510 *.125 # 13.251 * 0.040510
-        effective_minor = 0.024181251 * 0.40510 * .125
-        hairlength = 0.0075 *hair_scale
-        hairwidth = 0.000215 * hair_scale
+        effective_minor = 0.034181251 * 0.40510 * .125
+        hairlength = 0.0075 *hair_scale *1.25
+        hairwidth = 0.000215 * hair_scale 
 
 
         hair_pts, hair_widths, hair_npts = [], [], []
@@ -1028,7 +784,17 @@ def main(
 
 
 
-    random.seed(3)  # makes your randomness repeatable across runs
+
+
+
+
+
+
+
+    # 13,14 seems okayish maybe with slightly bigger inner tori
+    # 15 good, 17 pretty okay, like 18 but slight gap at the back
+    random.seed(18)  # makes your randomness repeatable across runs, 7 before hairs from 4000 to 6000
+
     manual_rotations = [
         [-5.240707458162173, 180.88458450591904, 177.3991033309616],
         [186.54888206652072, -168.90417928342112, -185.3133800064442],
@@ -1075,22 +841,22 @@ def main(
     ]
     #ri.Translate(0, -.495, 0)  # Slightly adjust position to avoid z-fighting
 
-    num_tori2 = 0 #50 
+    num_tori2 = 15 #50 
     rmaj_values = np.linspace(1.1, 1.3, num_tori2)
     # print("rmaj_values", rmaj_values)
 
-    # for i in range(num_tori2):
+    for i in range(num_tori2):
     # for i, (tx, ty, tz) in enumerate(manual_positions):
-    for i, ((tx, ty, tz), (rx, ry, rz)) in enumerate(zip(manual_positions, manual_rotations)):
+    # for i, ((tx, ty, tz), (rx, ry, rz)) in enumerate(zip(manual_positions, manual_rotations)):
 
-        # rx = math.sin(i * 1.618) * 180 + random.uniform(-10, 10)
-        # ry = math.cos(i * 2.718) * 180 + random.uniform(-10, 10)
-        # rz = math.cos(i * 3.1415) * 180 + random.uniform(-10, 10)
-        # # print("rx, ry, rz", rx, ry, rz)
+        rx = math.sin(i * 1.618) * 180 + random.uniform(-10, 10)
+        ry = math.cos(i * 2.718) * 180 + random.uniform(-10, 10)
+        rz = math.cos(i * 3.1415) * 180 + random.uniform(-10, 10)
+        # print("rx, ry, rz", rx, ry, rz)
 
-        # tx = math.sin(i * 0.06) * 0.0001 + random.uniform(-0.00005, 0.00005)
-        # ty = math.cos(i * 0.06) * 0.0001 + random.uniform(-0.00005, 0.00005)
-        # tz = math.sin(i * 0.06) * 0.0001 + random.uniform(-0.00005, 0.00005)
+        tx = math.sin(i * 0.06) * 0.0001 + random.uniform(-0.00005, 0.00005)
+        ty = math.cos(i * 0.06) * 0.0001 + random.uniform(-0.00005, 0.00005)
+        tz = math.sin(i * 0.06) * 0.0001 + random.uniform(-0.00005, 0.00005)
 
         ri.TransformBegin()
         # ri.TransformBegin()
@@ -1104,7 +870,7 @@ def main(
         ri.AttributeBegin()
 
 
-        ri.Attribute("displacementbound", {"float sphere": [0.04]}) # .2
+        ri.Attribute("displacementbound", {"float sphere": [0.02]}) # .2
         ri.Attribute("dice", {
             "float micropolygonlength": [0.1]
         })
@@ -1137,9 +903,9 @@ def main(
         ri.Pattern(
             "disp", "disp",
             {
-                "float scale1": [.003],  # Larger displacement for the first spiral
-                "float repeatU1": [230],  # Repeat factor for the first spiral
-                "float repeatV1": [10.0],  # Repeat factor for the first spiral
+                "float scale1": [.0043],  # Larger displacement for the first spiral
+                "float repeatU1": [170],  # Repeat factor for the first spiral
+                "float repeatV1": [8.0],  # Repeat factor for the first spiral
 
                 "float scale2": [0.0],  # 0.04
                 "float repeatU2": [150],  # 
@@ -1257,11 +1023,12 @@ def main(
         #ri.Torus(.325, 0.05, 0.0, 360.0, 360.0)
         ri.Scale(0.125, 0.125, 0.125)  # Scale down the sphere
         ri.Scale(.40510, .40510, .40510)
-        ri.Torus(Rmaj2, 0.024181251, 0, 360, 360)
+        ri.Torus(Rmaj2, 0.034181251, 0, 360, 360)  # removed the 2 from in front of 4 
         #wobbly_torus_uvs(ri)
 
         # ri.TransformEnd()
         ri.AttributeEnd()
+
 
 
 
@@ -1273,15 +1040,15 @@ def main(
         hair_scale = .125
         # Match the effective torus radii
         effective_major = Rmaj2 * 0.40510 *.125 # 13.251 * 0.040510
-        effective_minor = 0.024181251 * 0.40510 * .125
-        hairlength = 0.0075 *hair_scale
-        hairwidth = 0.000215 * hair_scale
+        effective_minor = 0.034181251 * 0.40510 * .125
+        hairlength = 0.0075 *hair_scale *1.25
+        hairwidth = 0.000215 * hair_scale 
 
 
         hair_pts, hair_widths, hair_npts = [], [], []
 
         # # !!!!
-        generate_hair(hair_pts, hair_widths, hair_npts, count=4000, major_radius=effective_major, minor_radius=effective_minor, hair_length=hairlength, hair_width=hairwidth)
+        generate_hair(hair_pts, hair_widths, hair_npts, count=6000, major_radius=effective_major, minor_radius=effective_minor, hair_length=hairlength, hair_width=hairwidth)
 
         ri.AttributeBegin()
 
@@ -1338,91 +1105,93 @@ def main(
     # #wobbly_torus(ri)
 
     # ri.AttributeEnd()
+
+    ri.TransformBegin()
+
+
+    ri.AttributeBegin()
+
+
+    ri.Attribute("displacementbound", {"float sphere": [0.02]}) # .2
+    ri.Attribute("dice", {
+        "float micropolygonlength": [0.1]
+    })
+
+
+    ri.Pattern(
+        "disp", "disp",
+        {
+            "float scale1": [.0045],  # Larger displacement for the first spiral
+            "float repeatU1": [170],  # Repeat factor for the first spiral
+            "float repeatV1": [8.0],  # Repeat factor for the first spiral
+
+            "float scale2": [0.0],  # 0.04
+            "float repeatU2": [150],  # 
+            "float repeatV2": [-37],  # -7 
+
+            "float noiseAmount1": [0.0015],   # Larger bumps noise strength
+            "float noiseFreq1": [.750],     # Larger bumps frequency
+
+            "float noiseAmount2": [0.0032],   # 0.02, can make it bigger maybe slightly
+            "float noiseFreq2": [14.0]  ,    # between 4 and 5 
+
+            "float noiseAmount3": [0.00],   # maybe 0.005 or 0.002 but maybe more just slight stripes not bumps
+            "float noiseFreq3": [80.0]      # the smallest bumps on it
+        }
+    )
+
+    # Apply displacement shader
+    ri.Displace(
+        "PxrDisplace", "pxrdisp",
+        {"reference float dispScalar": ["disp:resultF"]}
+    )
+
+
+    ri.Bxdf("PxrSurface", "yarnShader",
+    {
+        "float diffuseGain" : [.50],  # Bring back warmth
+        "color diffuseColor" : [1.0, 0.075, 0.05],  # Slightly warmer diffuse
+        "float diffuseRoughness" : [0.6],  # Softer light scatter
+
+
+
+        "float fuzzGain" : [1.0],  # Increase fuzz for soft, warm look
+        "color fuzzColor" : [1.0, 0.05, 0.05],
+
+
+        # Subsurface scattering for fluffiness
+        "int subsurfaceType"        : [1],              # 1 = Standard SSS model
+        "float subsurfaceGain"      : [0.05],           # Tiny amount of SSS
+        "color subsurfaceColor"     : [1.0, 0.075, 0.02],# Match base color
+        "float subsurfaceDmfp"      : [1.0], 
+
+        # Match highlight color to base — subtle red sheen
+        "color specularFaceColor" : [0.2, 0.05, 0.02],
+        "color specularEdgeColor" : [0.25, 0.06, 0.025], # fresnel edge sheen
+        "float specularRoughness" : [0.6],               # Soft highlights
+        "int specularFresnelMode" : [0],   
+    })
+
+
+    ri.Rotate(90, 1, 0, 0)
+    ri.Translate(-0.075, -0.0510, 0.05)
+    ri.Rotate(10, 0, 1, 0)
+    ri.Rotate(10, 0, 0, 1)
+
+    ri.Scale(0.125, 0.125, 0.125)
+    ri.Scale(.40510, .40510, .40510)
+    ri.Torus(1.5, 0.04324181251, 0, 360, 200)
+
+    ri.AttributeEnd()
+    ri.TransformEnd() 
+
+    
+
+
+
+
     ri.TransformEnd()
 
-    # # SINGLE YARN
-    # ri.TransformBegin()
-    # ri.Scale(.040510, .040510, .040510)
-    # ri.Rotate(90, 1, 0, 0)
-    # ri.Scale(1.5, 1.5, 1.5)
-    # #ri.Rotate(90, 0, 0, 1)
-    # ri.Translate(-10.5, 0, 0) #left side
-    # ri.Translate(0, 0, 8) # down?
-
-    # ri.AttributeBegin()
-    # ri.Attribute("displacementbound", {"float sphere": [0.4]}) # .2
-    # ri.Attribute("dice", {
-    #     "float micropolygonlength": [0.1]
-    # })
-
-    # ri.Pattern(
-    #     "disp", "disp",
-    #     {
-    #         "float scale1": [.127],  # Larger displacement for the first spiral
-    #         "float repeatU1": [100],  # Repeat factor for the first spiral
-    #         "float repeatV1": [3.0],  # Repeat factor for the first spiral
-
-    #         "float scale2": [0.005],  # 0.04
-    #         "float repeatU2": [150],  # 
-    #         "float repeatV2": [-37],  # -7 
-
-    #         "float noiseAmount1": [0.035],   # Larger bumps noise strength
-    #         "float noiseFreq1": [.3],     # Larger bumps frequency
-
-    #         "float noiseAmount2": [0.04],   # 0.02, can make it bigger maybe slightly
-    #         "float noiseFreq2": [2.0]  ,    # between 4 and 5 
-
-    #         "float noiseAmount3": [0.00],   # maybe 0.005 or 0.002 but maybe more just slight stripes not bumps
-    #         "float noiseFreq3": [80.0]      # the smallest bumps on it
-    #     }
-    # )
-
-    # # Apply displacement shader
-    # ri.Displace(
-    #     "PxrDisplace", "pxrdisp",
-    #     {"reference float dispScalar": ["disp:resultF"]}
-    # )
-
-
-    # # colour spiral pattern to simulate strands of fibres
-    # ri.Pattern(
-    #     "spiralColour", "spiralColour",
-    #     {
-    #         #"float scale1": [.127],  # Larger displacement for the first spiral
-    #         "float repeatU": [900],  # Repeat factor for the first spiral
-    #         "float repeatV": [-250.0],  # Repeat factor for the first spiral
-    #         #"float blendSharpness" : [10],  # Blend sharpness for the color transition
-    #         "color colorB": [0.9, 0.85, 0.8],
-    #         "color colorA": [1, 0.95, 0.9],
-    #         #            "color colorA": [0.8, 0.7, 0.63],
-    #         # "color colorB": [.95, 0.88, 0.73],
-    #         # "color colorA": [0.65, 0.55, 0.4],
-    #         # "color colorB": [0.85, 0.75, 0.6],
-
-    #     }
-    # )
-
-    # ri.Bxdf("PxrSurface", "yarnShader",
-    # {
-    #     "float diffuseGain" : [0.9],  # Bring back warmth
-    #     "reference color diffuseColor": ["spiralColour:resultRGB"],
-    #     "float diffuseRoughness" : [0.6],  # Softer light scatter
-
-    #     "float fuzzGain" : [0.8],  # Increase fuzz for soft, warm look
-    #     "color fuzzColor" : [1.0, 0.95, 0.85],
-
-    #     # "float subsurfaceGain" : [0.2],
-    #     # "color subsurfaceColor" : [0.85, 0.75, 0.6],
-    #     # "float subsurfaceDmfp" : [5.0],  # Shorter scattering = less waxy
-
-    #     "float specularRoughness" : [0.65],  # Slightly blurrier reflections
-    #     "color specularFaceColor" : [0.3, 0.28, 0.25],  # Even softer warm specular
-    #     "color specularEdgeColor" : [0.5, 0.45, 0.4],  # Milder fresnel effect
-
-    # })
-    # ri.Torus(13.251, 0.31251, 0, 360, 200)
-    # ri.AttributeEnd()
-    # ri.TransformEnd()
 
 
 
@@ -1462,13 +1231,13 @@ if __name__ == "__main__":
         "-s",
         nargs="?",
         const=10.0,
-        default=2.0,
+        default=10.0,
         type=float,
         help="modify the shading rate default to 10",
     )
 
     parser.add_argument(
-        "--pixelvar", "-p", nargs="?", const=0.01, default=0.01, type=float, help="modify the pixel variance default  0.1"
+        "--pixelvar", "-p", nargs="?", const=0.01, default=0.1, type=float, help="modify the pixel variance default  0.1"
     )
     parser.add_argument(
         "--fov", "-f", nargs="?", const=48.0, default=48.0, type=float, help="projection fov default 48.0"

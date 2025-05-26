@@ -520,7 +520,7 @@ def main(
 
     #ri.Scale(1.5, 1.5, 1.5)
 
-    # ri.Translate(0.1, 0.65, -1.35) # ADD this for close up!!!
+    ri.Translate(0.1, 0.65, -1.35) # ADD this for close up!!!
 
 
     # SPHERE
@@ -738,7 +738,7 @@ def main(
 
 
 
-    num_tori2 = 20 #50 
+    num_tori2 = 1 #50 
     rmaj_values = np.linspace(11, 13.0, num_tori2)
     # print("rmaj_values", rmaj_values)
 
@@ -923,6 +923,7 @@ def main(
         #Rmaj2 = float(rmaj_values[i])
         #ri.Torus(.325, 0.05, 0.0, 360.0, 360.0)
         # ri.Scale(0.25, 0.25, 0.25)  # Scale down the sphere
+        ri.Translate(0, -0.07, 0.05) # FOR CLOSE UP!!!!!
         ri.Scale(.040510, .040510, .040510)
         ri.Torus(Rmaj2, 0.24181251, 0, 360, 360)
         #wobbly_torus_uvs(ri)

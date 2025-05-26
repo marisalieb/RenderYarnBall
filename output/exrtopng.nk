@@ -1,0 +1,81 @@
+#! /opt/Nuke14.1v4/libnuke-14.1.4.so -nx
+#write_info Write1 file:"/home/s5723321/Renderman/MarisaRender/output/testA.png" format:"1920 1080 1" chans:":rgba.red:rgba.green:rgba.blue:" framerange:"1 100" fps:"0" colorspace:"default (sRGB)" datatype:"8 bit" transfer:"unknown" views:"main" colorManagement:"Nuke"
+version 14.1 v4
+define_window_layout_xml {<?xml version="1.0" encoding="UTF-8"?>
+<layout version="1.0">
+    <window x="0" y="27" w="3440" h="1376" maximized="1" screen="0">
+        <splitter orientation="1">
+            <split size="40"/>
+            <dock id="" hideTitles="1" activePageId="Toolbar.1">
+                <page id="Toolbar.1"/>
+            </dock>
+            <split size="2777" stretch="1"/>
+            <splitter orientation="2">
+                <split size="783"/>
+                <dock id="" activePageId="Viewer.1">
+                    <page id="Viewer.1"/>
+                </dock>
+                <split size="550"/>
+                <dock id="" activePageId="DAG.1">
+                    <page id="DAG.1"/>
+                    <page id="Curve Editor.1"/>
+                    <page id="DopeSheet.1"/>
+                </dock>
+            </splitter>
+            <split size="615"/>
+            <dock id="" activePageId="Properties.1">
+                <page id="Properties.1"/>
+                <page id="uk.co.thefoundry.backgroundrenderview.1"/>
+                <page id="Scenegraph.1"/>
+            </dock>
+        </splitter>
+    </window>
+</layout>
+}
+Root {
+ inputs 0
+ name /home/s5723321/Renderman/MarisaRender/output/exrtopng.nk
+ format "2048 1556 0 0 2048 1556 1 2K_Super_35(full-ap)"
+ proxy_type scale
+ proxy_format "1024 778 0 0 1024 778 1 1K_Super_35(full-ap)"
+ colorManagement Nuke
+ workingSpaceLUT linear
+ monitorLut sRGB
+ monitorOutLUT rec709
+ int8Lut sRGB
+ int16Lut sRGB
+ logLut Cineon
+ floatLut linear
+}
+Read {
+ inputs 0
+ file_type exr
+ file /home/s5723321/Renderman/MarisaRender/output/scene12.exr
+ format "1920 1080 0 0 1920 1080 1 HD_1080"
+ origset true
+ name Read1
+ xpos -56
+ ypos -167
+}
+Write {
+ file /home/s5723321/Renderman/MarisaRender/output/testA.png
+ file_type png
+ checkHashOnRead false
+ version 1
+ ocioColorspace scene_linear
+ display default
+ view sRGB
+ name Write1
+ selected true
+ xpos -25
+ ypos -24
+}
+Viewer {
+ frame 1
+ frame_range 1-100
+ monitorOutNDISenderName "NukeX - untitled - Viewer1"
+ monitorOutOutputTransform rec709
+ name Viewer1
+ xpos -8
+ ypos 68
+}

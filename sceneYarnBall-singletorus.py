@@ -1263,9 +1263,9 @@ def main(
         Rmaj2 = random.uniform(1.2, 1.3)
         #Rmaj2 = float(rmaj_values[i])
         #ri.Torus(.325, 0.05, 0.0, 360.0, 360.0)
-        ri.Scale(0.25, 0.25, 0.25)  # Scale down the sphere
+        ri.Scale(0.35, 0.35, 0.35)  # Scale down the sphere
         ri.Scale(.40510, .40510, .40510)
-        ri.Translate(0.1, 0.9, .5) # ADD this for close up!!!
+        ri.Translate(0.2, 1, -1.765) # ADD this for close up!!!
         # ri.Translate(0.1, 0, 1.5)
         ri.Torus(Rmaj2, 0.024181251, 0, 360, 360)
         #wobbly_torus_uvs(ri)
