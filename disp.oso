@@ -5,6 +5,7 @@ shader disp
 param	float	scale1	1		%read{43,43} %write{2147483647,-1}
 param	float	repeatU1	5.5		%read{0,0} %write{2147483647,-1}
 param	float	repeatV1	1		%read{1,1} %write{2147483647,-1}
+param	float	brightBias1	0.25		%read{13,13} %write{2147483647,-1}
 param	float	scale2	0.200000003		%read{44,44} %write{2147483647,-1}
 param	float	repeatU2	2.5		%read{14,14} %write{2147483647,-1}
 param	float	repeatV2	0.5		%read{15,15} %write{2147483647,-1}
@@ -45,7 +46,6 @@ temp	float	$tmp8	%read{9,9} %write{8,8}
 const	float	$const5	3.14159274		%read{9,23} %write{2147483647,-1}
 temp	float	$tmp9	%read{10,10} %write{9,9}
 temp	float	$tmp10	%read{12,12} %write{11,11}
-const	float	$const6	0.25		%read{13,27} %write{2147483647,-1}
 temp	float	$tmp11	%read{16,16} %write{14,14}
 temp	float	$tmp12	%read{16,16} %write{15,15}
 temp	float	$tmp13	%read{18,21} %write{16,16}
@@ -56,6 +56,7 @@ temp	float	$tmp17	%read{25,25} %write{24,24}
 temp	float	$tmp18	%read{23,23} %write{22,22}
 temp	float	$tmp19	%read{24,24} %write{23,23}
 temp	float	$tmp20	%read{26,26} %write{25,25}
+const	float	$const6	0.25		%read{27,27} %write{2147483647,-1}
 const	string	$const7	"perlin"		%read{29,39} %write{2147483647,-1}
 temp	point	$tmp21	%read{29,29} %write{28,28}
 temp	float	$tmp22	%read{31,31} %write{30,30}
@@ -72,9 +73,9 @@ temp	float	$tmp32	%read{46,46} %write{45,45}
 temp	float	$tmp33	%read{47,47} %write{46,46}
 temp	float	$tmp34	%read{48,48} %write{47,47}
 code ___main___
-# disp.osl:24
+# disp.osl:25
 #     float spiralCoord1 = mod(u * repeatU1 + v * repeatV1, 1.0);
-	mul		$tmp1 u repeatU1 	%filename{"disp.osl"} %line{24} %argrw{"wrr"}
+	mul		$tmp1 u repeatU1 	%filename{"disp.osl"} %line{25} %argrw{"wrr"}
 	mul		$tmp2 v repeatV1 	%argrw{"wrr"}
 	add		$tmp3 $tmp1 $tmp2 	%argrw{"wrr"}
 	functioncall	$const2 8 	%argrw{"r"}
@@ -84,19 +85,19 @@ code ___main___
 	floor		$tmp4 $tmp5 	%argrw{"wr"}
 	mul		$tmp6 $const1 $tmp4 	%argrw{"wrr"}
 	sub		spiralCoord1 $tmp3 $tmp6 	%argrw{"wrr"}
-# disp.osl:25
+# disp.osl:26
 #     float raw1 = 0.5 + 0.5 * sin(spiralCoord1 * 2.0 * M_PI);
-	mul		$tmp8 spiralCoord1 $const4 	%filename{"disp.osl"} %line{25} %argrw{"wrr"}
+	mul		$tmp8 spiralCoord1 $const4 	%filename{"disp.osl"} %line{26} %argrw{"wrr"}
 	mul		$tmp9 $tmp8 $const5 	%argrw{"wrr"}
 	sin		$tmp7 $tmp9 	%argrw{"wr"}
 	mul		$tmp10 $const3 $tmp7 	%argrw{"wrr"}
 	add		raw1 $const3 $tmp10 	%argrw{"wrr"}
-# disp.osl:26
-#     float blend1 = pow(raw1, 0.25);  // Bias toward bright displacement
-	pow		blend1 raw1 $const6 	%line{26} %argrw{"wrr"}
-# disp.osl:29
+# disp.osl:27
+#     float blend1 = pow(raw1, brightBias1);
+	pow		blend1 raw1 brightBias1 	%line{27} %argrw{"wrr"}
+# disp.osl:30
 #     float spiralCoord2 = mod(u * repeatU2 + v * repeatV2, 1.0);
-	mul		$tmp11 u repeatU2 	%line{29} %argrw{"wrr"}
+	mul		$tmp11 u repeatU2 	%line{30} %argrw{"wrr"}
 	mul		$tmp12 v repeatV2 	%argrw{"wrr"}
 	add		$tmp13 $tmp11 $tmp12 	%argrw{"wrr"}
 	functioncall	$const2 22 	%argrw{"r"}
@@ -106,46 +107,46 @@ code ___main___
 	floor		$tmp14 $tmp15 	%argrw{"wr"}
 	mul		$tmp16 $const1 $tmp14 	%argrw{"wrr"}
 	sub		spiralCoord2 $tmp13 $tmp16 	%argrw{"wrr"}
-# disp.osl:30
+# disp.osl:31
 #     float raw2 = 0.5 + 0.5 * sin(spiralCoord2 * 2.0 * M_PI);
-	mul		$tmp18 spiralCoord2 $const4 	%filename{"disp.osl"} %line{30} %argrw{"wrr"}
+	mul		$tmp18 spiralCoord2 $const4 	%filename{"disp.osl"} %line{31} %argrw{"wrr"}
 	mul		$tmp19 $tmp18 $const5 	%argrw{"wrr"}
 	sin		$tmp17 $tmp19 	%argrw{"wr"}
 	mul		$tmp20 $const3 $tmp17 	%argrw{"wrr"}
 	add		raw2 $const3 $tmp20 	%argrw{"wrr"}
-# disp.osl:31
+# disp.osl:32
 #     float blend2 = pow(raw2, 0.25);  // Bias toward bright displacement
-	pow		blend2 raw2 $const6 	%line{31} %argrw{"wrr"}
-# disp.osl:34
-#     float n1 = noise("perlin", P * noiseFreq1);  // Larger procedural noise
-	mul		$tmp21 P noiseFreq1 	%line{34} %argrw{"wrr"}
-	noise		n1 $const7 $tmp21 	%argrw{"wrr"}
+	pow		blend2 raw2 $const6 	%line{32} %argrw{"wrr"}
 # disp.osl:35
+#     float n1 = noise("perlin", P * noiseFreq1);  // Larger procedural noise
+	mul		$tmp21 P noiseFreq1 	%line{35} %argrw{"wrr"}
+	noise		n1 $const7 $tmp21 	%argrw{"wrr"}
+# disp.osl:36
 #     float noisyBump1 = (n1 - 0.5) * 2.0 * noiseAmount1; // Centered at 0
-	sub		$tmp22 n1 $const3 	%line{35} %argrw{"wrr"}
+	sub		$tmp22 n1 $const3 	%line{36} %argrw{"wrr"}
 	mul		$tmp23 $tmp22 $const4 	%argrw{"wrr"}
 	mul		noisyBump1 $tmp23 noiseAmount1 	%argrw{"wrr"}
-# disp.osl:38
-#     float n2 = noise("perlin", P * noiseFreq2);  // Smaller procedural noise
-	mul		$tmp24 P noiseFreq2 	%line{38} %argrw{"wrr"}
-	noise		n2 $const7 $tmp24 	%argrw{"wrr"}
 # disp.osl:39
+#     float n2 = noise("perlin", P * noiseFreq2);  // Smaller procedural noise
+	mul		$tmp24 P noiseFreq2 	%line{39} %argrw{"wrr"}
+	noise		n2 $const7 $tmp24 	%argrw{"wrr"}
+# disp.osl:40
 #     float noisyBump2 = (n2 - 0.5) * 2.0 * noiseAmount2; // Centered at 0
-	sub		$tmp25 n2 $const3 	%line{39} %argrw{"wrr"}
+	sub		$tmp25 n2 $const3 	%line{40} %argrw{"wrr"}
 	mul		$tmp26 $tmp25 $const4 	%argrw{"wrr"}
 	mul		noisyBump2 $tmp26 noiseAmount2 	%argrw{"wrr"}
-# disp.osl:42
-#     float n3 = noise("perlin", P * noiseFreq3); 
-	mul		$tmp27 P noiseFreq3 	%line{42} %argrw{"wrr"}
-	noise		n3 $const7 $tmp27 	%argrw{"wrr"}
 # disp.osl:43
+#     float n3 = noise("perlin", P * noiseFreq3); 
+	mul		$tmp27 P noiseFreq3 	%line{43} %argrw{"wrr"}
+	noise		n3 $const7 $tmp27 	%argrw{"wrr"}
+# disp.osl:44
 #     float noisyBump3 = (n3 - 0.5) * 2.0 * noiseAmount3; 
-	sub		$tmp28 n3 $const3 	%line{43} %argrw{"wrr"}
+	sub		$tmp28 n3 $const3 	%line{44} %argrw{"wrr"}
 	mul		$tmp29 $tmp28 $const4 	%argrw{"wrr"}
 	mul		noisyBump3 $tmp29 noiseAmount3 	%argrw{"wrr"}
-# disp.osl:46
+# disp.osl:47
 #     resultF = (scale1 * blend1) + (scale2 * blend2) + noisyBump1 + noisyBump2 + noisyBump3;
-	mul		$tmp30 scale1 blend1 	%line{46} %argrw{"wrr"}
+	mul		$tmp30 scale1 blend1 	%line{47} %argrw{"wrr"}
 	mul		$tmp31 scale2 blend2 	%argrw{"wrr"}
 	add		$tmp32 $tmp30 $tmp31 	%argrw{"wrr"}
 	add		$tmp33 $tmp32 noisyBump1 	%argrw{"wrr"}

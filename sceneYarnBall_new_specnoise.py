@@ -575,13 +575,13 @@ def main(
         ri.Pattern(
             "disp", "disp",
             {
-                "float scale1": [.00543],  # Larger displacement for the first spiral
+                "float scale1": [.006543],  # Larger displacement for the first spiral
                 "float repeatU1": [170],  # Repeat factor for the first spiral, 230
                 "float repeatV1": [8],  # Repeat factor for the first spiral, 10
 
-                "float scale2": [0.002],  # 0.04
+                "float scale2": [0.000625],  # 0.04
                 "float repeatU2": [150],  # 
-                "float repeatV2": [-17],  # -7 
+                "float repeatV2": [-37],  # -7 
 
                 "float noiseAmount1": [0.0015],   # Larger bumps noise strength
                 "float noiseFreq1": [.750],     # Larger bumps frequency
@@ -589,8 +589,8 @@ def main(
                 "float noiseAmount2": [0.0032],   # 0.02, can make it bigger maybe slightly
                 "float noiseFreq2": [14.0]  ,    # between 4 and 5 
 
-                "float noiseAmount3": [0.001],   # maybe 0.005 or 0.002 but maybe more just slight stripes not bumps
-                "float noiseFreq3": [80.0]      # the smallest bumps on it
+                "float noiseAmount3": [0.0005],   # maybe 0.005 or 0.002 but maybe more just slight stripes not bumps
+                "float noiseFreq3": [100.0]      # the smallest bumps on it
             }
         )
 
@@ -620,36 +620,53 @@ def main(
 
         #     }
         # )
-
+        # colour spiral pattern to simulate strands of fibres
         ri.Pattern(
-            "spiralSpec", "spiralSpec",
+            "spiralColourNoise", "spiralColourNoise",
             {
                 #"float scale1": [.127],  # Larger displacement for the first spiral
-                "float repeatU": [200],  # Repeat factor for the first spiral
-                "float repeatV": [-45.0],  # Repeat factor for the first spiral
+                "float repeatU": [70],  # Repeat factor for the first spiral
+                "float repeatV": [-30.0],  # Repeat factor for the first spiral
                 #"float blendSharpness" : [10],  # Blend sharpness for the color transition
-                # "color colorB": [0.9, 0.85, 0.8], # WHITEISH
-                # "color colorA": [1, 0.095, 0.09],
-                "color colorA": [0, 0, 0],  # Pure black for specular
-                "color colorB": [.6, .6, .6],  # Pure white for specular
-                #            "color colorA": [0.8, 0.7, 0.63],
-                # "color colorB": [.95, 0.88, 0.73],
-                # "color colorA": [0.65, 0.55, 0.4],
-                # "color colorB": [0.85, 0.75, 0.6],
+                "color colorA": [0.75, 0.06, 0.047],
+                "color colorB": [1, 0.075, 0.05],
+
+                "float noiseFreq1": [1500.750],
+
 
             }
         )
 
+        ri.Pattern(
+            "spiralSpecNoise", "spiralSpecNoise",
+            {
+                #"float scale1": [.127],  # Larger displacement for the first spiral
+                "float repeatU": [70],  # Repeat factor for the first spiral
+                "float repeatV": [-10.0],  # Repeat factor for the first spiral
+                #"float blendSharpness" : [10],  # Blend sharpness for the color transition
+
+                "float noiseFreq1": [2000.750],
+                "float maskScale": [2.5],  # Use 1.5 for more matte, or 0.5 for glossier
+
+                "color colorA": [1, 1, 1],
+                "color colorB": [0.007, .007, .007],
+
+
+            }
+        )
+
+
         ri.Bxdf("PxrSurface", "yarnShader",
         {
             "float diffuseGain" : [.50],  # Bring back warmth
-            # "reference color diffuseColor": ["spiralSpec:resultRGB"],
-            "color diffuseColor" : [1.0, 0.075, 0.05],  # Slightly warmer diffuse
+            "reference color diffuseColor": ["spiralColourNoise:resultRGB"],
+            # # "reference color diffuseColor": ["spiralSpec:resultRGB"],
+            # "color diffuseColor" : [1.0, 0.075, 0.05],  # Slightly warmer diffuse
             "float diffuseRoughness" : [0.6],  # Softer light scatter
 
 
             # FOR WHITE SHINY WOOL!!!
-            # # "reference float specularRoughness": ["spiralSpec:resultMask"],
+            "reference float specularRoughness": ["spiralSpecNoise:resultMask"],
             # # # "reference color specularFaceColor": ["spiralSpec:resultRGB"],
             # # "float specularGain": [1.0],
             # "color specularFaceColor": [1.0, 1.0, 1.0],
@@ -682,7 +699,7 @@ def main(
             # Match highlight color to base — subtle red sheen
             "color specularFaceColor" : [0.2, 0.05, 0.02],
             "color specularEdgeColor" : [0.25, 0.06, 0.025], # fresnel edge sheen
-            "float specularRoughness" : [0.6],               # Soft highlights
+            # "float specularRoughness" : [0.6],               # Soft highlights
             "int specularFresnelMode" : [0],   
         })
         # ri.AttributeEnd()
@@ -925,13 +942,13 @@ def main(
         ri.Pattern(
             "disp", "disp",
             {
-                "float scale1": [.00543],  # Larger displacement for the first spiral
+                "float scale1": [.006543],  # Larger displacement for the first spiral
                 "float repeatU1": [170],  # Repeat factor for the first spiral, 230
                 "float repeatV1": [8],  # Repeat factor for the first spiral, 10
 
-                "float scale2": [0.002],  # 0.04
+                "float scale2": [0.000625],  # 0.04
                 "float repeatU2": [150],  # 
-                "float repeatV2": [-17],  # -7 
+                "float repeatV2": [-37],  # -7 
 
                 "float noiseAmount1": [0.0015],   # Larger bumps noise strength
                 "float noiseFreq1": [.750],     # Larger bumps frequency
@@ -939,8 +956,8 @@ def main(
                 "float noiseAmount2": [0.0032],   # 0.02, can make it bigger maybe slightly
                 "float noiseFreq2": [14.0]  ,    # between 4 and 5 
 
-                "float noiseAmount3": [0.001],   # maybe 0.005 or 0.002 but maybe more just slight stripes not bumps
-                "float noiseFreq3": [80.0]      # the smallest bumps on it
+                "float noiseAmount3": [0.0005],   # maybe 0.005 or 0.002 but maybe more just slight stripes not bumps
+                "float noiseFreq3": [100.0]      # the smallest bumps on it
             }
         )
         # Apply displacement shader
@@ -969,36 +986,53 @@ def main(
 
         #     }
         # )
-
+        # colour spiral pattern to simulate strands of fibres
         ri.Pattern(
-            "spiralSpec", "spiralSpec",
+            "spiralColourNoise", "spiralColourNoise",
             {
                 #"float scale1": [.127],  # Larger displacement for the first spiral
-                "float repeatU": [200],  # Repeat factor for the first spiral
-                "float repeatV": [-45.0],  # Repeat factor for the first spiral
+                "float repeatU": [70],  # Repeat factor for the first spiral
+                "float repeatV": [-30.0],  # Repeat factor for the first spiral
                 #"float blendSharpness" : [10],  # Blend sharpness for the color transition
-                # "color colorB": [0.9, 0.85, 0.8], # WHITEISH
-                # "color colorA": [1, 0.095, 0.09],
-                "color colorA": [0, 0, 0],  # Pure black for specular
-                "color colorB": [.6, .6, .6],  # Pure white for specular
-                #            "color colorA": [0.8, 0.7, 0.63],
-                # "color colorB": [.95, 0.88, 0.73],
-                # "color colorA": [0.65, 0.55, 0.4],
-                # "color colorB": [0.85, 0.75, 0.6],
+                "color colorA": [0.75, 0.06, 0.047],
+                "color colorB": [1, 0.075, 0.05],
+
+                "float noiseFreq1": [1500.750],
+
 
             }
         )
 
+        ri.Pattern(
+            "spiralSpecNoise", "spiralSpecNoise",
+            {
+                #"float scale1": [.127],  # Larger displacement for the first spiral
+                "float repeatU": [70],  # Repeat factor for the first spiral
+                "float repeatV": [-10.0],  # Repeat factor for the first spiral
+                #"float blendSharpness" : [10],  # Blend sharpness for the color transition
+
+                "float noiseFreq1": [2000.750],
+                "float maskScale": [2.5],  # Use 1.5 for more matte, or 0.5 for glossier
+
+                "color colorA": [1, 1, 1],
+                "color colorB": [0.007, .007, .007],
+
+
+            }
+        )
+
+
         ri.Bxdf("PxrSurface", "yarnShader",
         {
             "float diffuseGain" : [.50],  # Bring back warmth
-            # "reference color diffuseColor": ["spiralSpec:resultRGB"],
-            "color diffuseColor" : [1.0, 0.075, 0.05],  # Slightly warmer diffuse
+            "reference color diffuseColor": ["spiralColourNoise:resultRGB"],
+            # # "reference color diffuseColor": ["spiralSpec:resultRGB"],
+            # "color diffuseColor" : [1.0, 0.075, 0.05],  # Slightly warmer diffuse
             "float diffuseRoughness" : [0.6],  # Softer light scatter
 
 
             # FOR WHITE SHINY WOOL!!!
-            # # "reference float specularRoughness": ["spiralSpec:resultMask"],
+            "reference float specularRoughness": ["spiralSpecNoise:resultMask"],
             # # # "reference color specularFaceColor": ["spiralSpec:resultRGB"],
             # # "float specularGain": [1.0],
             # "color specularFaceColor": [1.0, 1.0, 1.0],
@@ -1031,7 +1065,7 @@ def main(
             # Match highlight color to base — subtle red sheen
             "color specularFaceColor" : [0.2, 0.05, 0.02],
             "color specularEdgeColor" : [0.25, 0.06, 0.025], # fresnel edge sheen
-            "float specularRoughness" : [0.6],               # Soft highlights
+            # "float specularRoughness" : [0.6],               # Soft highlights
             "int specularFresnelMode" : [0],   
         })
         # ri.AttributeEnd()
@@ -1160,16 +1194,17 @@ def main(
     #         "float noiseFreq3": [80.0]      # the smallest bumps on it
     #     }
     # )
+
     ri.Pattern(
         "disp", "disp",
         {
-            "float scale1": [.00543],  # Larger displacement for the first spiral
+            "float scale1": [.006543],  # Larger displacement for the first spiral
             "float repeatU1": [170],  # Repeat factor for the first spiral, 230
             "float repeatV1": [8],  # Repeat factor for the first spiral, 10
 
-            "float scale2": [0.002],  # 0.04
+            "float scale2": [0.000625],  # 0.04
             "float repeatU2": [150],  # 
-            "float repeatV2": [-17],  # -7 
+            "float repeatV2": [-37],  # -7 
 
             "float noiseAmount1": [0.0015],   # Larger bumps noise strength
             "float noiseFreq1": [.750],     # Larger bumps frequency
@@ -1177,11 +1212,11 @@ def main(
             "float noiseAmount2": [0.0032],   # 0.02, can make it bigger maybe slightly
             "float noiseFreq2": [14.0]  ,    # between 4 and 5 
 
-            "float noiseAmount3": [0.001],   # maybe 0.005 or 0.002 but maybe more just slight stripes not bumps
-            "float noiseFreq3": [80.0]      # the smallest bumps on it
+            "float noiseAmount3": [0.0005],   # maybe 0.005 or 0.002 but maybe more just slight stripes not bumps
+            "float noiseFreq3": [100.0]      # the smallest bumps on it
         }
     )
-    
+
     # Apply displacement shader
     ri.Displace(
         "PxrDisplace", "pxrdisp",
@@ -1189,31 +1224,89 @@ def main(
     )
 
 
+
+    # colour spiral pattern to simulate strands of fibres
+    ri.Pattern(
+        "spiralColourNoise", "spiralColourNoise",
+        {
+            #"float scale1": [.127],  # Larger displacement for the first spiral
+            "float repeatU": [70],  # Repeat factor for the first spiral
+            "float repeatV": [-30.0],  # Repeat factor for the first spiral
+            #"float blendSharpness" : [10],  # Blend sharpness for the color transition
+            "color colorA": [0.75, 0.06, 0.047],
+            "color colorB": [1, 0.075, 0.05],
+
+            "float noiseFreq1": [1500.750],
+
+
+        }
+    )
+
+    ri.Pattern(
+        "spiralSpecNoise", "spiralSpecNoise",
+        {
+            #"float scale1": [.127],  # Larger displacement for the first spiral
+            "float repeatU": [70],  # Repeat factor for the first spiral
+            "float repeatV": [-10.0],  # Repeat factor for the first spiral
+            #"float blendSharpness" : [10],  # Blend sharpness for the color transition
+
+            "float noiseFreq1": [2000.750],
+            "float maskScale": [2.5],  # Use 1.5 for more matte, or 0.5 for glossier
+
+            "color colorA": [1, 1, 1],
+            "color colorB": [0.007, .007, .007],
+
+
+        }
+    )
+
+
     ri.Bxdf("PxrSurface", "yarnShader",
     {
         "float diffuseGain" : [.50],  # Bring back warmth
-        "color diffuseColor" : [1.0, 0.075, 0.05],  # Slightly warmer diffuse
+        "reference color diffuseColor": ["spiralColourNoise:resultRGB"],
+        # # "reference color diffuseColor": ["spiralSpec:resultRGB"],
+        # "color diffuseColor" : [1.0, 0.075, 0.05],  # Slightly warmer diffuse
         "float diffuseRoughness" : [0.6],  # Softer light scatter
+
+
+        # FOR WHITE SHINY WOOL!!!
+        "reference float specularRoughness": ["spiralSpecNoise:resultMask"],
+        # # # "reference color specularFaceColor": ["spiralSpec:resultRGB"],
+        # # "float specularGain": [1.0],
+        # "color specularFaceColor": [1.0, 1.0, 1.0],
+        # "color specularEdgeColor": [1.0, 1.0, 1.0],
+        # "int specularFresnelMode": [1],         # Enable Fresnel
+        # "color specularIor": [1.5],  # float or colour?           # Default dielectric IOR
+        # "reference float specularRoughness": ["spiralSpec:resultMask"]
+
+
 
 
 
         "float fuzzGain" : [1.0],  # Increase fuzz for soft, warm look
         "color fuzzColor" : [1.0, 0.05, 0.05],
 
-
+        # "float subsurfaceGain": [0.3],
+        # "color subsurfaceColor": [1.0, 0.05, 0.09],
+        # "float subsurfaceDmfp": [5.0],  # Increase for fluffier light spread
+        
         # Subsurface scattering for fluffiness
         "int subsurfaceType"        : [1],              # 1 = Standard SSS model
         "float subsurfaceGain"      : [0.05],           # Tiny amount of SSS
         "color subsurfaceColor"     : [1.0, 0.075, 0.02],# Match base color
         "float subsurfaceDmfp"      : [1.0], 
+        # "float subsurfaceGain" : [0.2],
+        # "color subsurfaceColor" : [0.85, 0.75, 0.6],
+        # "float subsurfaceDmfp" : [5.0],  # Shorter scattering = less waxy
+
 
         # Match highlight color to base — subtle red sheen
         "color specularFaceColor" : [0.2, 0.05, 0.02],
         "color specularEdgeColor" : [0.25, 0.06, 0.025], # fresnel edge sheen
-        "float specularRoughness" : [0.6],               # Soft highlights
+        # "float specularRoughness" : [0.6],               # Soft highlights
         "int specularFresnelMode" : [0],   
     })
-
 
     ri.Rotate(90, 1, 0, 0)
     ri.Translate(-0.075, -0.0510, 0.05)

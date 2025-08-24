@@ -3,6 +3,7 @@ disp(
     float scale1 = 1.0,           // Larger spiral scale
     float repeatU1 = 5.5,
     float repeatV1 = 1.0,
+    float brightBias1 = 0.25,
 
     float scale2 = 0.2,           // Smaller spiral scale
     float repeatU2 = 2.5,
@@ -23,8 +24,8 @@ disp(
     // Larger spiral (goes one way)
     float spiralCoord1 = mod(u * repeatU1 + v * repeatV1, 1.0);
     float raw1 = 0.5 + 0.5 * sin(spiralCoord1 * 2.0 * M_PI);
-    float blend1 = pow(raw1, 0.25);  // Bias toward bright displacement
- 
+    float blend1 = pow(raw1, brightBias1);
+
     // Smaller spiral (goes the opposite way)
     float spiralCoord2 = mod(u * repeatU2 + v * repeatV2, 1.0);
     float raw2 = 0.5 + 0.5 * sin(spiralCoord2 * 2.0 * M_PI);

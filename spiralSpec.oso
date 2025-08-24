@@ -22,9 +22,9 @@ temp	float	$tmp5	%read{5,5} %write{4,4}
 temp	float	$tmp6	%read{7,7} %write{6,6}
 const	float	$const3	0.5		%read{8,8} %write{2147483647,-1}
 code ___main___
-# spiralSpec.osl:12
+# spiralSpec.osl:14
 #     float spiralCoord = mod(u * repeatU + v * repeatV, 1.0);
-	mul		$tmp1 u repeatU 	%filename{"spiralSpec.osl"} %line{12} %argrw{"wrr"}
+	mul		$tmp1 u repeatU 	%filename{"spiralSpec.osl"} %line{14} %argrw{"wrr"}
 	mul		$tmp2 v repeatV 	%argrw{"wrr"}
 	add		$tmp3 $tmp1 $tmp2 	%argrw{"wrr"}
 	functioncall	$const2 8 	%argrw{"r"}
@@ -34,13 +34,13 @@ code ___main___
 	floor		$tmp4 $tmp5 	%argrw{"wr"}
 	mul		$tmp6 $const1 $tmp4 	%argrw{"wrr"}
 	sub		spiralCoord $tmp3 $tmp6 	%argrw{"wrr"}
-# spiralSpec.osl:15
+# spiralSpec.osl:17
 #     float stripe = step(0.5, spiralCoord);      // 0 or 1 only
-	step		stripe $const3 spiralCoord 	%filename{"spiralSpec.osl"} %line{15} %argrw{"wrr"}
-# spiralSpec.osl:18
-#     resultRGB = mix(colorA, colorB, stripe);    // stripe is 0 or 1
-	mix		resultRGB colorA colorB stripe 	%line{18} %argrw{"wrrr"}
+	step		stripe $const3 spiralCoord 	%filename{"spiralSpec.osl"} %line{17} %argrw{"wrr"}
 # spiralSpec.osl:20
+#     resultRGB = mix(colorA, colorB, stripe);    // stripe is 0 or 1
+	mix		resultRGB colorA colorB stripe 	%line{20} %argrw{"wrrr"}
+# spiralSpec.osl:22
 #     resultMask = stripe; // 0 for colorA, 1 for colorB
-	assign		resultMask stripe 	%line{20} %argrw{"wr"}
+	assign		resultMask stripe 	%line{22} %argrw{"wr"}
 	end

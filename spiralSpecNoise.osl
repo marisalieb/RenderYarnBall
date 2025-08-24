@@ -1,0 +1,32 @@
+shader
+spiralSpecNoise(
+    float repeatU = 5.5,
+    float repeatV = 1.0,
+
+    float noiseFreq1 = 10.0,       // Frequency of noise
+    float maskScale = 1.0,         // Control roughness output (1 = normal, <1 = glossier)
+
+    color colorA = color(0.85, 0.75, 0.6),
+    color colorB = color(0.5, 0.3, 0.2),
+
+    output color resultRGB = 0,
+    output float resultMask = 0,
+    output float resultMask2 = 0
+
+)
+{
+    /* Combine the UVs into a spiral coordinate and wrap it to 0–1   */
+    float spiralCoord = mod(u * repeatU + v * repeatV, 1.0);
+
+    /* Hard stripe: 0 when spiralCoord < 0.5, 1 when ≥ 0.5           */
+    float stripe = step(0.5, spiralCoord);      // 0 or 1 only
+    
+    // Noise bump 1 (larger)
+    float n1 = noise("perlin", P * noiseFreq1);  // Larger procedural noise
+    float noisyStripe = clamp(n1 + spiralCoord * 0.5, 0.0, 1.0);  // blend noise + spiral
+
+    /* Pick the colour with no interpolation                         */
+    resultRGB = mix(colorA, colorB, noisyStripe);    // stripe is 0 or 1
+    resultMask = clamp(noisyStripe * maskScale, 0.550, 0.80);
+    resultMask2 = clamp(noisyStripe * maskScale, 0.350, 0.60);
+}

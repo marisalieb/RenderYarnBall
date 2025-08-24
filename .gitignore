@@ -1,3 +1,12 @@
 textures/
 
 .nk
+
+output/
+
+*.exr
+
+*.nk
+
+
+*.oso
