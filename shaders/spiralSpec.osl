@@ -10,13 +10,13 @@ spiralSpec(
     output float resultMask = 0,
 )
 {
-    /* Combine the UVs into a spiral coordinate and wrap it to 0–1   */
+    // Combine the UVs into a spiral coordinate and wrap it to 0–1
     float spiralCoord = mod(u * repeatU + v * repeatV, 1.0);
 
-    /* Hard stripe: 0 when spiralCoord < 0.5, 1 when ≥ 0.5           */
+    // Hard stripe: 0 when spiralCoord < 0.5, 1 when ≥ 0.5
     float stripe = step(0.5, spiralCoord);      // 0 or 1 only
 
-    /* Pick the colour with no interpolation                         */
+    // Pick the colour with no interpolation
     resultRGB = mix(colorA, colorB, stripe);    // stripe is 0 or 1
 
     resultMask = stripe; // 0 for colorA, 1 for colorB
