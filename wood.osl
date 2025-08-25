@@ -1,8 +1,0 @@
-shader wood (
-    output color Cout=0,
-    output float Bout=0
-)
-{
-    Cout = texture("/home/s5723321/Renderman/MarisaRender/textures/Hackberry_pxr128.tx", u*4, v*4);
-    Bout = texture("/home/s5723321/Renderman/MarisaRender/textures/Hackberry_pxr128_bmp.tx", u*4, v*4);
-}

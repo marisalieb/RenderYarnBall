@@ -1,10 +1,10 @@
 #!/usr/bin/env rmanpy
 
-import prman, math, random, os
+import prman, os
 import sys
 import subprocess
-import array
 
+print("Current working directory:", os.getcwd())
 
 def checkAndCompileShader(shader):
     if (
@@ -19,27 +19,8 @@ def checkAndCompileShader(shader):
 
 
 
-# shadername2 = "check"
-# checkAndCompileShader(shadername2)
-
-# shadername3 = "displace_noise"
-# checkAndCompileShader(shadername3)
-
 shadername4 = "disp"
 checkAndCompileShader(shadername4)
-
-shadername5 = "spiralColour"
-checkAndCompileShader(shadername5)
-
-shadername6 = "disp_wobbly"
-checkAndCompileShader(shadername6)
-
-shadername7 = "wood"
-checkAndCompileShader(shadername7)
-
-shadername8 = "spiralSpec"
-checkAndCompileShader(shadername8) 
-
 
 shadername9 = "spiralColourNoise"
 checkAndCompileShader(shadername9) 

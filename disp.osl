@@ -3,20 +3,20 @@ disp(
     float scale1 = 1.0,           // Larger spiral scale
     float repeatU1 = 5.5,
     float repeatV1 = 1.0,
-    float brightBias1 = 0.25,
+    float brightBias1 = 0.25,     // adjust where the brightness bias is, for example much more white or equal
 
     float scale2 = 0.2,           // Smaller spiral scale
     float repeatU2 = 2.5,
     float repeatV2 = 0.5,
 
-    float noiseAmount1 = 0.05,     // Strength of the noisy bump
-    float noiseFreq1 = 10.0,       // Frequency of noise
+    float noiseAmount1 = 0.05,     // Strength of the first noisy bumps
+    float noiseFreq1 = 10.0,       // Frequency
 
-    float noiseAmount2 = 0.02,    // Strength of the second (smaller) noisy bump
-    float noiseFreq2 = 25.0,      // Frequency of the second noise (finer bumps)
+    float noiseAmount2 = 0.02,    // Strength of the second (medium) noisy bumps
+    float noiseFreq2 = 25.0,      // Frequency
 
-    float noiseAmount3 = 0.05,    // Strength of the second (smaller) noisy bump
-    float noiseFreq3 = 10.0,
+    float noiseAmount3 = 0.05,    // Strength of the thirs (smallest) noisy bumps
+    float noiseFreq3 = 10.0,       // Frequency
 
     output float resultF = 0.0
 )
@@ -29,20 +29,20 @@ disp(
     // Smaller spiral (goes the opposite way)
     float spiralCoord2 = mod(u * repeatU2 + v * repeatV2, 1.0);
     float raw2 = 0.5 + 0.5 * sin(spiralCoord2 * 2.0 * M_PI);
-    float blend2 = pow(raw2, 0.25);  // Bias toward bright displacement
+    float blend2 = pow(raw2, 0.25);  // Bias toward bright displacement without input parameter
 
     // Noise bump 1 (larger)
-    float n1 = noise("perlin", P * noiseFreq1);  // Larger procedural noise
-    float noisyBump1 = (n1 - 0.5) * 2.0 * noiseAmount1; // Centered at 0
+    float n1 = noise("perlin", P * noiseFreq1);  // Larger procedural noise for overall strands look
+    float noisyBump1 = (n1 - 0.5) * 2.0 * noiseAmount1;
 
-    // Noise bump 2 (smaller)
+    // Noise bump 2 (medium)
     float n2 = noise("perlin", P * noiseFreq2);  // Smaller procedural noise
-    float noisyBump2 = (n2 - 0.5) * 2.0 * noiseAmount2; // Centered at 0
+    float noisyBump2 = (n2 - 0.5) * 2.0 * noiseAmount2;
 
-
-    float n3 = noise("perlin", P * noiseFreq3); 
+    // Noise bump 3 (small)
+    float n3 = noise("perlin", P * noiseFreq3);   // very small noise
     float noisyBump3 = (n3 - 0.5) * 2.0 * noiseAmount3; 
 
-    // Combine
+    // Combine all 
     resultF = (scale1 * blend1) + (scale2 * blend2) + noisyBump1 + noisyBump2 + noisyBump3;
 }
